@@ -148,8 +148,9 @@ docs — and PRs to keep the table current are very welcome.
 
 ## Contributing
 
-Found a new agent, a changed path, or a better invocation trick? Open an issue
-or PR. Please note the tool version and date you verified against.
+Found a new agent, a changed path, or a better invocation trick? Path updates
+are the most valuable contribution here — see [CONTRIBUTING.md](CONTRIBUTING.md)
+for what to include (tool version, OS, how you verified) and a quick local check.
 
 ## License
 
