@@ -1,0 +1,4 @@
+# Canonical author identity for this repository.
+# Maps any legacy / placeholder commit email to the real owner,
+# so git shortlog and GitHub always attribute commits correctly.
+BreetyGreen <161273156+BreetyGreen@users.noreply.github.com> <einar@users.noreply.github.com>
