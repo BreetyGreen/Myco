@@ -3,7 +3,7 @@
   <g transform="translate(20,28)">
     <rect x="0" y="0" width="84" height="84" rx="19" fill="#16171D"/>
     <rect x="4" y="4" width="76" height="76" rx="16" fill="none" stroke="#27500A" stroke-width="1"/>
-    <g transform="translate(21,16)">
+    <g transform="translate(13.5,13.5)">
       <!-- 后 chip -->
       <g transform="translate(26,0)">
         <rect x="0" y="0" width="31" height="31" rx="8" fill="none" stroke="#3B6D11" stroke-width="1.6"/>
