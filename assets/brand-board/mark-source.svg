@@ -1,0 +1,24 @@
+<svg width="520" height="520" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
+  <!-- 底板：深墨色圆角方块 -->
+  <rect x="0" y="0" width="520" height="520" rx="120" fill="#16171D"/>
+  <!-- 内描边：做出双层机械边框质感 -->
+  <rect x="18" y="18" width="484" height="484" rx="102" fill="none" stroke="#27500A" stroke-width="2"/>
+
+  <!-- 主干 + 两条分叉枝干（git branch 结构） -->
+  <g stroke="#639922" stroke-width="30" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M188 372 L188 232"/>
+    <path d="M188 232 L188 168"/>
+    <path d="M188 250 C188 196 268 188 336 188"/>
+    <path d="M188 300 C188 344 268 336 336 336"/>
+  </g>
+
+  <!-- 三个 agent 节点（浅绿实心圆） -->
+  <circle cx="188" cy="150" r="30" fill="#97C459"/>
+  <circle cx="352" cy="188" r="30" fill="#97C459"/>
+  <circle cx="352" cy="336" r="30" fill="#97C459"/>
+
+  <!-- 源头节点（那份 skill）：深绿实心 + 浅色描边 + 白核 -->
+  <circle cx="188" cy="384" r="40" fill="#639922"/>
+  <circle cx="188" cy="384" r="40" fill="none" stroke="#C0DD97" stroke-width="4"/>
+  <circle cx="188" cy="384" r="14" fill="#EAF3DE"/>
+</svg>
