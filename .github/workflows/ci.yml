@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  validate:
+    name: Validate skills & distributor
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate every SKILL.md frontmatter
+        run: python3 scripts/validate_skills.py
+
+      - name: Dry-run the distributor (must not error)
+        run: python3 scripts/distribute.py --src ./skill --dest . --dry-run

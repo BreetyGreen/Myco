@@ -9,9 +9,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/license-MIT-3B6D11" alt="MIT License">
+  <a href="https://github.com/BreetyGreen/multi-agent-skill-sharing/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/BreetyGreen/multi-agent-skill-sharing/ci.yml?branch=master&label=CI&color=3B6D11" alt="CI status"></a>
+  <a href="https://github.com/BreetyGreen/multi-agent-skill-sharing/releases"><img src="https://img.shields.io/github/v/release/BreetyGreen/multi-agent-skill-sharing?color=639922" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/BreetyGreen/multi-agent-skill-sharing?color=3B6D11" alt="MIT License"></a>
+  <a href="https://github.com/BreetyGreen/multi-agent-skill-sharing/stargazers"><img src="https://img.shields.io/github/stars/BreetyGreen/multi-agent-skill-sharing?style=flat&color=97C459" alt="Stars"></a>
   <img src="https://img.shields.io/badge/agents-5%20supported-639922" alt="5 agents supported">
-  <img src="https://img.shields.io/badge/verified-2026--07-97C459" alt="verified 2026-07">
 </p>
 
 <p align="center">
