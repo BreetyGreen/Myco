@@ -5,6 +5,7 @@ const { Resvg } = require('@resvg/resvg-js');
 const jobs = [
   { svg: 'assets/logo-icon.svg', png: 'assets/logo-icon.png', width: 512 },
   { svg: 'assets/logo-wordmark.svg', png: 'assets/logo-wordmark.png', width: 1040 },
+  { svg: 'assets/logo-wordmark-dark.svg', png: 'assets/logo-wordmark-dark.png', width: 1040 },
 ];
 
 // repo root = two levels up from this file (assets/brand-board/render.js)

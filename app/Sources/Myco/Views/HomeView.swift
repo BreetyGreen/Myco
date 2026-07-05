@@ -10,7 +10,7 @@ struct HomeView: View {
                 .font(.system(size: 13)).foregroundColor(p.text2)
             + Text("\(store.installedCount) 个 agent")
                 .font(.system(size: 13, weight: .semibold)).foregroundColor(p.text)
-            + Text("，共 ").font(.system(size: 13)).foregroundColor(p.text2)
+            + Text("，约 ").font(.system(size: 13)).foregroundColor(p.text2)
             + Text("\(store.totalSessions) 段会话")
                 .font(.system(size: 13, weight: .semibold)).foregroundColor(p.text)
             + Text(" 可归档与接力。").font(.system(size: 13)).foregroundColor(p.text2)
@@ -105,9 +105,17 @@ struct AgentRow: View {
             Spacer()
             HStack(spacing: 6) {
                 LiveDot(live: agent.installed)
-                Text(agent.installed ? "\(agent.sessionCount) 段" : "未安装")
-                    .font(.system(size: 11.5, weight: .semibold))
-                    .foregroundColor(agent.installed ? p.brand : p.text3)
+                if agent.pathChanged {
+                    Text("结构已变")
+                        .font(.system(size: 11.5, weight: .semibold))
+                        .foregroundColor(Color(red: 0.85, green: 0.55, blue: 0.13))
+                } else {
+                    Text(agent.installed
+                         ? (agent.approximate ? "约 \(agent.sessionCount) 段" : "\(agent.sessionCount) 段")
+                         : "未安装")
+                        .font(.system(size: 11.5, weight: .semibold))
+                        .foregroundColor(agent.installed ? p.brand : p.text3)
+                }
             }
         }
         .padding(.horizontal, 11).padding(.vertical, 10)

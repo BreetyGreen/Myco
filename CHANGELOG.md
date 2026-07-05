@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-07-06
+
+Bug-fix release: fixes the README logo (invisible on GitHub's dark theme),
+unifies the agent list into one registry, and wires the app to real chat data.
+
+### Added
+- **`engine/agents.json`** — a single source of truth for every agent Myco
+  knows about (id, display, detection path, session-reading method, skill
+  directory). Both the Swift app (`AgentDetector`) and the Python engine
+  (`distribute.py`) read it, so detection and skill-distribution can never
+  drift apart again. Adding an agent / moving a path is now a one-line JSON
+  edit — no recompile.
+- **Dark-theme logo** (`assets/logo-wordmark-dark.png`) + a `<picture>` switch
+  in both READMEs so the wordmark is visible on light *and* dark GitHub themes.
+- **`handoff_chat.py --json`** — machine-readable session listing (avoids
+  fixed-width column parsing that broke on CJK titles).
+
+### Fixed
+- **README logo no longer disappears on GitHub.** The wordmark was still the old
+  `skill·share` art with near-black text (`#16171D`) on a transparent
+  background — invisible on GitHub's dark theme. Rebranded to `myco` and made
+  theme-aware.
+- **Two divergent agent lists reconciled.** Detection knew 5 agents
+  (claude/workbuddy/codex/cursor/antigravity) while distribution knew a
+  different 4 (claude/codex/agents/cline). Both now come from `agents.json`;
+  WorkBuddy/Cursor/Antigravity are now valid skill targets too.
+- **History/Relay show real sessions**, not placeholder titles — the app now
+  calls the engine's `--list --json` and parses actual conversations.
+- Session counts derived from counting `*.jsonl` files are now labelled
+  **"约 N"** (approximate) instead of implying an exact number.
+
+### Changed
+- Agent detection reports **"结构已变"** when an agent's root exists but its
+  session store moved, instead of silently showing "not installed".
+- `countJSONL` gained a lightweight mtime-keyed cache to avoid re-walking large
+  history trees on every panel open.
+
+
 ## [0.3.0] — 2026-07-06
 
 **Rebrand to Myco** and reposition the whole project around a single product:
@@ -97,7 +135,8 @@ First public release. **Install a skill once, use it across every AI coding agen
 ### Agents covered
 Claude Code · Codex CLI · Cursor · Gemini CLI · Cline
 
-[Unreleased]: https://github.com/BreetyGreen/Myco/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/BreetyGreen/Myco/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/BreetyGreen/Myco/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/BreetyGreen/Myco/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/BreetyGreen/Myco/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/BreetyGreen/Myco/releases/tag/v0.1.0

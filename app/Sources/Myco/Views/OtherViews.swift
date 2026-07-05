@@ -80,7 +80,12 @@ struct RelayView: View {
                             sessionRow(s)
                         }.buttonStyle(.plain)
                     }
-                    if store.sessions.isEmpty {
+                    if store.sessionsLoading && store.sessions.isEmpty {
+                        HStack(spacing: 8) {
+                            ProgressView().scaleEffect(0.7)
+                            Text("正在读取真实会话…").font(.system(size: 12)).foregroundColor(p.text3)
+                        }.padding(.vertical, 20)
+                    } else if store.sessions.isEmpty {
                         Text("未检测到会话").font(.system(size: 12)).foregroundColor(p.text3)
                             .padding(.vertical, 20)
                     }
@@ -151,6 +156,9 @@ struct HistoryView: View {
                         Text(a.display).font(.system(size: 13, weight: .medium))
                             .foregroundColor(p.text)
                         Spacer()
+                        if a.approximate {
+                            Text("约").font(.system(size: 10)).foregroundColor(p.text3)
+                        }
                         Text("\(a.sessionCount)")
                             .font(.system(size: 14, weight: .bold)).monospacedDigit()
                             .foregroundColor(p.brand)

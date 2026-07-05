@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="assets/logo-wordmark.png" alt="Myco" width="420">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-wordmark-dark.png">
+    <img src="assets/logo-wordmark.png" alt="Myco" width="420">
+  </picture>
 </p>
 
 <h1 align="center">Myco</h1>

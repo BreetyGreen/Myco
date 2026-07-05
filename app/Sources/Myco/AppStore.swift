@@ -10,6 +10,7 @@ final class AppStore: ObservableObject {
     @Published var sessions: [Session] = []
     @Published var busy = false
     @Published var lastLog: String = ""
+    @Published var sessionsLoading = false   // 真实会话异步加载中
 
     var palette: Palette { Palette(appearance: appearance) }
 
@@ -26,17 +27,30 @@ final class AppStore: ObservableObject {
         }
     }
 
-    /// 异步检测本机 agent + 加载可分发 skill（演示用真实存在的 skill 名）。
+    /// 异步检测本机 agent + 加载可分发 skill；随后再异步拉取真实会话列表。
+    /// 两段式：先秒出 agent 概览（快），会话列表（要扫全部历史，慢）后到。
     func refresh() {
         DispatchQueue.global(qos: .userInitiated).async {
             let detected = AgentDetector.detectAll()
             let skills = Self.loadShareableSkills()
-            let sess = Self.demoSessions(from: detected)
             DispatchQueue.main.async {
                 self.agents = detected
                 self.skills = skills
-                self.sessions = sess
+                self.sessions = []
+                self.loadRealSessions()   // 接真实会话（异步）
             }
+        }
+    }
+
+    /// 调 handoff_chat.py --list --json 拉取真实会话，替换早期的占位数据。
+    func loadRealSessions() {
+        let installedIDs = installed.map { $0.id.rawValue }
+        guard !installedIDs.isEmpty else { sessions = []; return }
+        sessionsLoading = true
+        PythonBridge.shared.handoffListSessions(agents: installedIDs) { [weak self] real in
+            guard let self else { return }
+            self.sessions = real
+            self.sessionsLoading = false
         }
     }
 
@@ -77,27 +91,45 @@ final class AppStore: ObservableObject {
         return nil
     }
 
-    /// 概览用的会话样本（真实数据请走 handoffList；这里给检测到的 agent 生成占位标题）。
-    static func demoSessions(from agents: [Agent]) -> [Session] {
-        var out: [Session] = []
-        let samples = [
-            ("019f078f", "修图买表工作流梳理", 101),
-            ("a03294d4", "菜单栏 App 原型设计", 48),
-            ("7c2b91de", "会话接力方案讨论", 33),
-            ("3e5f10ab", "skill 分发脚本重构", 27),
-        ]
-        for (i, a) in agents.filter({ $0.installed }).enumerated() {
-            let s = samples[i % samples.count]
-            out.append(Session(id: s.0, agent: a.id, title: s.1, rounds: s.2, updated: "今天"))
+    /// skill 分发目标：从注册表(agents.json)驱动，与检测端 5 个 agent 完全对齐，
+    /// 再加上跨 agent 通用目录(.agents)。彻底消除"检测到的 ≠ 能分享的"。
+    func defaultTargets() -> [SkillTarget] {
+        let url = PythonBridge.shared.resourceRoot
+            .appendingPathComponent("engine/agents.json")
+        guard let data = try? Data(contentsOf: url),
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return fallbackTargets()
         }
-        return out
+        let defaults = Set((obj["defaultDistribute"] as? [String]) ?? ["claude", "codex", "workbuddy", "agents"])
+        var out: [SkillTarget] = []
+        // 5 个 agent（来自 agents[]）
+        if let arr = obj["agents"] as? [[String: Any]] {
+            for a in arr {
+                guard let id = a["id"] as? String,
+                      let dir = a["skillDir"] as? String else { continue }
+                let label = (a["display"] as? String) ?? id
+                out.append(SkillTarget(id: id, dir: dir, label: label,
+                                       recommended: false, checked: defaults.contains(id)))
+            }
+        }
+        // 额外跨 agent 目标（.agents / .cline）
+        if let extra = obj["extraSkillTargets"] as? [[String: Any]] {
+            for e in extra {
+                guard let id = e["id"] as? String,
+                      let dir = e["dir"] as? String else { continue }
+                let label = (e["label"] as? String) ?? id
+                out.append(SkillTarget(id: id, dir: dir, label: label,
+                                       recommended: id == "agents", checked: defaults.contains(id)))
+            }
+        }
+        return out.isEmpty ? fallbackTargets() : out
     }
 
-    /// skill 分发目标（对齐 distribute.py 的 AGENT_DIRS）
-    func defaultTargets() -> [SkillTarget] {
+    private func fallbackTargets() -> [SkillTarget] {
         [
             SkillTarget(id: "claude", dir: ".claude/skills", label: "Claude Code", recommended: false, checked: true),
             SkillTarget(id: "codex", dir: ".codex/skills", label: "Codex CLI", recommended: false, checked: true),
+            SkillTarget(id: "workbuddy", dir: ".workbuddy/skills", label: "WorkBuddy", recommended: false, checked: true),
             SkillTarget(id: "agents", dir: ".agents/skills", label: "跨 agent 通用", recommended: true, checked: true),
             SkillTarget(id: "cline", dir: ".cline/skills", label: "Cline", recommended: false, checked: false),
         ]

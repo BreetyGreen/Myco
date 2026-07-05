@@ -144,6 +144,36 @@ final class PythonBridge {
         runAsync(script: "engine/handoff_chat.py", args: args, done: done)
     }
 
+    /// 列出真实会话（机读 JSON）：handoff_chat.py --list --json
+    /// 解析为 [Session]（title 支持中文，走 JSON 不受列宽/CJK 宽度影响）。
+    func handoffListSessions(agents: [String], search: String = "",
+                             done: @escaping ([Session]) -> Void) {
+        var args = ["--agents", agents.joined(separator: ","), "--list", "--json"]
+        if !search.isEmpty { args += ["--search", search] }
+        runAsync(script: "engine/handoff_chat.py", args: args) { r in
+            done(Self.parseSessions(r.stdout))
+        }
+    }
+
+    /// 解析 handoff_chat.py --json 的输出为 [Session]。失败返回空数组。
+    static func parseSessions(_ stdout: String) -> [Session] {
+        guard let data = stdout.data(using: .utf8),
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let arr = obj["sessions"] as? [[String: Any]] else {
+            return []
+        }
+        return arr.compactMap { s in
+            guard let short = s["shortid"] as? String,
+                  let agentStr = s["agent"] as? String,
+                  let agent = AgentID(rawValue: agentStr) else { return nil }
+            let title = (s["title"] as? String) ?? "(无标题)"
+            let msgs = (s["msgs"] as? Int) ?? 0
+            let date = (s["date"] as? String) ?? ""
+            return Session(id: short, agent: agent, title: title,
+                           rounds: msgs, updated: date.isEmpty ? "—" : date)
+        }
+    }
+
     /// 生成会话接力包：handoff_chat.py --session <id> --mode <m> --out <file> --print
     func handoffBuild(session: String, mode: String, out: String,
                       done: @escaping (RunResult) -> Void) {

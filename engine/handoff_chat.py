@@ -33,6 +33,7 @@ Read-only. Cross-platform. Pure standard library.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from typing import List, Optional
@@ -112,6 +113,23 @@ def _print_table(sessions: List[CanonicalSession], limit: int = 60) -> None:
         print(f"... (+{len(sessions) - limit} more; narrow with --agents / --search)")
 
 
+def _print_json(sessions: List[CanonicalSession], limit: int = 200) -> None:
+    """Machine-readable listing for the Myco app (avoids fixed-width column
+    parsing, which breaks on CJK titles). One JSON object to stdout."""
+    items = []
+    for s in sessions[:limit]:
+        date = (s.updated_at or s.created_at or "")[:10]
+        items.append({
+            "shortid": _short(s),
+            "session_id": s.session_id,
+            "agent": s.source_agent,
+            "title": (s.title or s.derive_title()),
+            "msgs": len(s.non_empty_messages()),
+            "date": date,
+        })
+    print(json.dumps({"count": len(sessions), "sessions": items}, ensure_ascii=False))
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     p = argparse.ArgumentParser(
         description="Build a conversation-handoff package to continue an "
@@ -123,6 +141,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="comma-separated source agents to scan: " + ",".join(DEFAULT_AGENTS),
     )
     p.add_argument("--list", action="store_true", help="list candidate sessions and exit")
+    p.add_argument("--json", dest="as_json", action="store_true",
+                   help="with --list: emit machine-readable JSON (for the Myco app)")
     p.add_argument("--search", default="", help="filter sessions by title/id substring")
     p.add_argument(
         "--session",
@@ -161,11 +181,18 @@ def main(argv: Optional[List[str]] = None) -> int:
         sessions = [s for s in sessions if _matches(s, args.search)]
 
     if not sessions:
+        # JSON consumers (the app) expect a valid empty payload, not an error.
+        if args.as_json and (args.list or not args.session):
+            print(json.dumps({"count": 0, "sessions": []}, ensure_ascii=False))
+            return 0
         print("No sessions found for the given filters.", file=sys.stderr)
         return 1
 
-    # --list, or no selector given -> show the table to help the user pick.
+    # --list, or no selector given -> show the listing to help the user pick.
     if args.list or not args.session:
+        if args.as_json:
+            _print_json(sessions)
+            return 0
         _print_table(sessions)
         if not args.list:
             print(

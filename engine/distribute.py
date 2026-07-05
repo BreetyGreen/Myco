@@ -31,20 +31,55 @@ Each destination gets:  <dest>/<agent-dir>/<skill-name>/SKILL.md (+ any assets)
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import shutil
 import sys
 from pathlib import Path
 
 # Repo-level skill directories per agent. Keys are the --agents selectors.
-AGENT_DIRS = {
+# These are the fallback defaults; the authoritative list lives in
+# agents.json next to this file (single source of truth shared with the
+# Swift app). If that file is present it OVERRIDES these built-ins, so a
+# new agent / moved path only needs editing in one place.
+_FALLBACK_AGENT_DIRS = {
     "claude": ".claude/skills",   # Claude Code
     "codex": ".codex/skills",     # Codex CLI (seen-in-practice path)
     "agents": ".agents/skills",   # Codex/Gemini/Cursor cross-agent convention
     "cline": ".cline/skills",     # Cline
 }
+_FALLBACK_DEFAULT_AGENTS = ["claude", "codex", "agents"]
 
-DEFAULT_AGENTS = ["claude", "codex", "agents"]
+
+def load_registry() -> tuple[dict[str, str], list[str]]:
+    """Build {selector: skill-dir} and the default agent list from
+    agents.json (single source of truth). Falls back to the built-ins if the
+    registry is missing or malformed, so distribute.py always works."""
+    reg = Path(__file__).resolve().parent / "agents.json"
+    try:
+        data = json.loads(reg.read_text(encoding="utf-8"))
+    except Exception:
+        return dict(_FALLBACK_AGENT_DIRS), list(_FALLBACK_DEFAULT_AGENTS)
+
+    dirs: dict[str, str] = {}
+    for a in data.get("agents", []):
+        sel, d = a.get("id"), a.get("skillDir")
+        if sel and d:
+            dirs[sel] = d
+    for e in data.get("extraSkillTargets", []):
+        sel, d = e.get("id"), e.get("dir")
+        if sel and d:
+            dirs[sel] = d
+    if not dirs:
+        return dict(_FALLBACK_AGENT_DIRS), list(_FALLBACK_DEFAULT_AGENTS)
+
+    defaults = [a for a in data.get("defaultDistribute", []) if a in dirs]
+    if not defaults:
+        defaults = list(_FALLBACK_DEFAULT_AGENTS)
+    return dirs, defaults
+
+
+AGENT_DIRS, DEFAULT_AGENTS = load_registry()
 
 NAME_RE = re.compile(r"^name:\s*(.+?)\s*$", re.MULTILINE)
 

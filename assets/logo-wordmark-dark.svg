@@ -1,5 +1,5 @@
 <svg width="520" height="140" viewBox="0 0 520 140" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Myco">
-  <!-- 图标（缩小版主标记） -->
+  <!-- 图标（缩小版主标记）——暗色主题版，与浅色版共用同一枚标记 -->
   <g transform="translate(20,28)">
     <rect x="0" y="0" width="84" height="84" rx="19" fill="#16171D"/>
     <rect x="4" y="4" width="76" height="76" rx="16" fill="none" stroke="#27500A" stroke-width="1"/>
@@ -21,7 +21,7 @@
       </g>
     </g>
   </g>
-  <text x="124" y="64" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="600" fill="#16171D">my</text>
-  <text x="167" y="64" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="600" fill="#639922">co</text>
-  <text x="124" y="94" font-family="ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="15" fill="#5F5E5A">the mycelial layer for your agents</text>
+  <text x="124" y="64" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="600" fill="#EAF3DE">my</text>
+  <text x="167" y="64" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" font-weight="600" fill="#97C459">co</text>
+  <text x="124" y="94" font-family="ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="15" fill="#9C9B96">the mycelial layer for your agents</text>
 </svg>

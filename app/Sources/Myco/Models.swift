@@ -23,14 +23,9 @@ enum AgentID: String, CaseIterable, Identifiable, Codable {
         case .antigravity: return "A"
         }
     }
-    /// distribute.py 的 --agents 选择器（仅 CLI 类 agent 有对应 skill 目录）
-    var skillSelector: String? {
-        switch self {
-        case .claude: return "claude"
-        case .codex: return "codex"
-        default: return nil
-        }
-    }
+    /// distribute.py 的 --agents 选择器。注册表(agents.json)给 5 个 agent
+    /// 都配了 skillDir，所以每个都能作为分发目标（id 即选择器）。
+    var skillSelector: String? { rawValue }
 }
 
 struct Agent: Identifiable {
@@ -38,6 +33,8 @@ struct Agent: Identifiable {
     var installed: Bool
     var sessionCount: Int
     var detail: String       // 版本/路径提示
+    var approximate: Bool = false   // 会话数为近似值（数 *.jsonl 文件数）→ UI 显示「约 N」
+    var pathChanged: Bool = false   // root 存在但会话来源结构已变 → UI 给提示而非静默
     var display: String { id.display }
 }
 
