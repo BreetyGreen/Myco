@@ -265,7 +265,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 1) {
                     Text("Myco").font(.system(size: 12, weight: .semibold))
                         .foregroundColor(p.text)
-                    Text("the mycelial layer for your agents · v0.2")
+                    Text("the mycelial layer for your agents · v0.3")
                         .font(.system(size: 10)).foregroundColor(p.text3)
                 }
             }

@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/BreetyGreen/multi-agent-skill-sharing/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/BreetyGreen/multi-agent-skill-sharing/ci.yml?branch=master&label=CI&color=3B6D11" alt="CI status"></a>
-  <a href="https://github.com/BreetyGreen/multi-agent-skill-sharing/releases/latest"><img src="https://img.shields.io/github/v/release/BreetyGreen/multi-agent-skill-sharing?color=639922&label=download" alt="Latest release"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/BreetyGreen/multi-agent-skill-sharing?color=3B6D11" alt="MIT License"></a>
+  <a href="https://github.com/BreetyGreen/Myco/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/BreetyGreen/Myco/ci.yml?branch=master&label=CI&color=3B6D11" alt="CI status"></a>
+  <a href="https://github.com/BreetyGreen/Myco/releases/latest"><img src="https://img.shields.io/github/v/release/BreetyGreen/Myco?color=639922&label=download" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/BreetyGreen/Myco?color=3B6D11" alt="MIT License"></a>
   <img src="https://img.shields.io/badge/platform-macOS%2013%2B-639922" alt="macOS 13+">
   <img src="https://img.shields.io/badge/agents-5%20supported-97C459" alt="5 agents supported">
 </p>
@@ -44,13 +44,13 @@ All of it from the menu bar. No command line, nothing to configure.
 ## Install
 
 <p align="center">
-  <a href="https://github.com/BreetyGreen/multi-agent-skill-sharing/releases/latest">
+  <a href="https://github.com/BreetyGreen/Myco/releases/latest">
     <img src="https://img.shields.io/badge/⬇%20Download%20Myco-.dmg-639922?style=for-the-badge" alt="Download Myco">
   </a>
 </p>
 
 1. Download **`Myco-x.y.z.dmg`** from the
-   [latest release](https://github.com/BreetyGreen/multi-agent-skill-sharing/releases/latest).
+   [latest release](https://github.com/BreetyGreen/Myco/releases/latest).
 2. Open the DMG and drag **`Myco.app`** into **Applications**.
 3. First launch: because the app is ad-hoc signed (not notarized), macOS
    Gatekeeper will hesitate. **Right-click `Myco.app` → Open → Open** once, and

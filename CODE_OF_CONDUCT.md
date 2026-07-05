@@ -60,7 +60,7 @@ representative at an online or offline event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement through the
-repository's [issue tracker](https://github.com/BreetyGreen/multi-agent-skill-sharing/issues)
+repository's [issue tracker](https://github.com/BreetyGreen/Myco/issues)
 or via a private security advisory. All complaints will be reviewed and
 investigated promptly and fairly.
 

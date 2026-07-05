@@ -50,4 +50,4 @@ Prefer source? `cd app && ./build.sh && open Conduit.app` (see `app/README.md`).
 - Skill-discovery paths across agents change fast; everything verified 2026-07.
   PRs to keep paths current are very welcome.
 
-**Full changelog:** https://github.com/BreetyGreen/multi-agent-skill-sharing/compare/v0.1.0...v0.2.0
+**Full changelog:** https://github.com/BreetyGreen/Myco/compare/v0.1.0...v0.2.0

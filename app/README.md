@@ -8,7 +8,7 @@
 
 纯菜单栏应用（`LSUIElement`），墨绿品牌 + 深浅双主题。UI 用 SwiftUI 原生绘制，能力内核由 Myco 内置的 Python 引擎（`engine/`）驱动，用户无需关心。
 
-> 这是 **面向贡献者** 的构建说明。只想用 Myco 的用户请直接从 [Releases](https://github.com/BreetyGreen/multi-agent-skill-sharing/releases) 下载 DMG，把 `Myco.app` 拖进「应用程序」即可，无需任何命令行。
+> 这是 **面向贡献者** 的构建说明。只想用 Myco 的用户请直接从 [Releases](https://github.com/BreetyGreen/Myco/releases) 下载 DMG，把 `Myco.app` 拖进「应用程序」即可，无需任何命令行。
 
 ## 技术形态
 
