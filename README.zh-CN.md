@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-wordmark-dark.png">
-    <img src="assets/logo-wordmark.png" alt="Myco" width="420">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/BreetyGreen/Myco/master/assets/logo-wordmark-dark.png">
+    <img src="https://raw.githubusercontent.com/BreetyGreen/Myco/master/assets/logo-wordmark.png" alt="Myco" width="420">
   </picture>
 </p>
 
