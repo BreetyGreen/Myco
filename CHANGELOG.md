@@ -7,7 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-07-05
+
+Grows the project into a **three-layer** cross-agent toolkit and ships a native
+macOS menu-bar app.
+
 ### Added
+- **`scripts/chatsync/`** — a read-only, pure-stdlib engine to sync chat
+  histories across Claude Code, WorkBuddy, Codex CLI, Cursor and Antigravity:
+  a canonical message model, per-agent readers (jsonl / codex / sqlite), and
+  HTML-timeline + archive exporters.
+- **`scripts/sync_chats.py`** — aggregate every detected agent's history into
+  one neutral, searchable archive + an offline merged HTML timeline.
+- **`scripts/handoff_chat.py`** — package one conversation as paste-ready text
+  so another agent can continue it in a legitimately new session (no forged
+  IDs, no DB writes).
+- **Conduit** (`app/`) — native macOS menu-bar app (SwiftUI + AppKit) that
+  wraps skill-sharing, chat hand-off and unified history behind a UI. Builds
+  with Command Line Tools only (no Xcode); `build.sh` assembles the signed
+  `.app`, `package_dmg.sh` produces a distributable DMG.
+- **`prototype/index.html`** — high-fidelity interactive HTML prototype
+  (墨绿 brand system, dark/light theme, canvas ambience).
+- **`docs/V2_CHAT_SYNC_DESIGN.md`** — design notes and the canonical model.
+- **CI**: chatsync import/CLI smoke tests + a macOS `swift build` job for the app.
 - `.github/` project scaffolding: issue templates (bug report, new-agent /
   path-change), a pull-request template, and an issue-template `config.yml`.
 - Continuous integration (`.github/workflows/ci.yml`): validates every
@@ -17,8 +39,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CHANGELOG.md`, `CODE_OF_CONDUCT.md`, and `SECURITY.md`.
 
 ### Changed
+- README (en + zh) now documents all three layers, with install-from-release
+  and build-from-source instructions for the app.
+- `.gitignore` hardened: ignores `.workbuddy/` and app build artifacts
+  (`.build`, `*.app`, `*.dmg`, `*.icns`) so private/generated files stay local.
 - README badges are now **dynamic** (CI status, latest release, license, stars)
   instead of hard-coded static images.
+
 
 ## [0.1.0] — 2026-07-01
 
@@ -42,5 +69,6 @@ First public release. **Install a skill once, use it across every AI coding agen
 ### Agents covered
 Claude Code · Codex CLI · Cursor · Gemini CLI · Cline
 
-[Unreleased]: https://github.com/BreetyGreen/multi-agent-skill-sharing/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/BreetyGreen/multi-agent-skill-sharing/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/BreetyGreen/multi-agent-skill-sharing/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/BreetyGreen/multi-agent-skill-sharing/releases/tag/v0.1.0
