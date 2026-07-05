@@ -33,6 +33,15 @@
 1. 把它安装到**项目仓库内部的、各 agent 各自的目录**里，这样它就能随 Git 一起走。
 2. 把**每个工具各自的调用语法**写清楚，这样大家才会用对。
 
+后来它又长出了两层，去解决多 agent 问题的*另一半* —— 你的**会话**和你的技能一样，也是各自为政、彼此隔离的：
+
+| 能力层 | 做什么 | 入口 |
+|--------|--------|------|
+| **① 共享技能** | 一份 `SKILL.md` → 铺进每个 agent 的仓库目录，`git commit` 后全队共享。 | [`scripts/distribute.py`](scripts/distribute.py) |
+| **② 同步 & 接力会话** | 把各 agent 的本地历史读成一份中性归档；把某一段对话打包，让另一个 agent *合法地*接着聊下去。 | [`scripts/sync_chats.py`](scripts/sync_chats.py)、[`scripts/handoff_chat.py`](scripts/handoff_chat.py) |
+| **③ Conduit 菜单栏 App** | 一个原生 macOS 托盘应用，把以上全部能力包进一个 UI 里。 | [`app/`](app/) |
+
+
 ---
 
 ## 为什么这事儿这么绕（30 秒速览）
@@ -113,6 +122,69 @@ python3 .../scripts/distribute.py --src ./skill --dest . --agents claude,codex
 
 ---
 
+## ② 跨 agent 同步 & 接力会话
+
+被隔离的不只是技能 —— 你的**聊天历史**也一样。每个工具都把自己的记录存在各自的地方、用各自的格式：
+
+| Agent | 历史存放位置 | 格式 |
+|-------|-------------|------|
+| **Claude Code** | `~/.claude/projects/**/*.jsonl` | JSONL |
+| **WorkBuddy** | `~/.workbuddy/**` | JSONL |
+| **Codex CLI** | `~/.codex/sessions/**/*.jsonl` | JSONL |
+| **Cursor** | `state.vscdb`（SQLite） | SQLite blob |
+| **Antigravity** | 工作区 SQLite 存储 | SQLite |
+
+两个**只读**工具把它们打通（都是**纯 Python 标准库**，零依赖）：
+
+**`sync_chats.py`** —— 把每个 agent 的本地历史读成一份中性、可搜索的归档，外加一份离线 HTML 时间线：
+
+```bash
+# 把检测到的所有 agent 聚合进 ./chat-archive + 一份合并 HTML 时间线
+python3 scripts/sync_chats.py --out ./chat-archive
+```
+
+**`handoff_chat.py`** —— 把*某一段*对话打包成可直接粘贴的文本，让另一个 agent 在一个**合法的新会话**里接着聊（不伪造 ID、不注入假历史）：
+
+```bash
+# 把某个 Codex 会话变成一段可粘进 Claude Code 的接力文本
+python3 scripts/handoff_chat.py --session <id> --to claude
+```
+
+设计说明与规范化消息模型见
+[`docs/V2_CHAT_SYNC_DESIGN.md`](docs/V2_CHAT_SYNC_DESIGN.md) 和
+[`scripts/README_chatsync.md`](scripts/README_chatsync.md)。
+
+---
+
+## ③ Conduit —— 菜单栏 App
+
+<p align="center">
+  <em>one workspace, every agent</em>
+</p>
+
+**Conduit** 是一个原生 macOS 菜单栏应用，把上面所有能力包进一个清爽的 UI —— 共享技能、接力会话、浏览统一历史，全程不用碰命令行。
+
+- **原生、极小** —— SwiftUI + AppKit（`NSStatusItem` 托盘 + `NSPopover`），**仅用 Command Line Tools 就能编译，无需 Xcode**。
+- **只读设计** —— agent 检测与历史读取绝不改动你的数据；SQLite 以 `immutable=1&mode=ro` 打开。
+- **复用 Python 内核** —— UI 只是通过 `Process` 调用同一批 `distribute.py` / `sync_chats.py` / `handoff_chat.py` 脚本。
+
+### 安装（预编译版）
+
+从 [Releases 页面](https://github.com/BreetyGreen/multi-agent-skill-sharing/releases) 下载 `Conduit-x.y.z.dmg`，打开后把 **Conduit.app** 拖进 **Applications**。它是 ad-hoc 签名的，首次启动请用**右键 → 打开**绕过 Gatekeeper。
+
+### 从源码构建
+
+```bash
+cd app
+./build.sh              # swift build -c release + 组装 Conduit.app + icns + ad-hoc 签名
+./package_dmg.sh        # （可选）产出可分发的 .dmg
+open Conduit.app
+```
+
+完整架构、调试/截图环境变量开关、源码布局见 [`app/README.md`](app/README.md)。
+
+---
+
 ## 仓库结构
 
 ```
@@ -121,12 +193,19 @@ multi-agent-skill-sharing/
 ├── LICENSE
 ├── skill/
 │   └── multi-agent-skill-sharing/
-│       └── SKILL.md          # 可移植的技能本体
+│       └── SKILL.md          # ① 可移植的技能本体
 ├── scripts/
-│   └── distribute.py         # 跨平台分发脚本
+│   ├── distribute.py         # ① 跨平台技能分发脚本
+│   ├── sync_chats.py         # ② 聚合各 agent 历史 → 归档 + HTML
+│   ├── handoff_chat.py       # ② 打包某段对话做合法接力
+│   └── chatsync/             # ② 规范化模型 + 各 agent reader + 导出器
+├── app/                      # ③ Conduit —— SwiftUI 菜单栏 App（无需 Xcode）
+├── prototype/                # ③ 高保真可交互 HTML 原型
 └── docs/
-    └── INSTALL.md            # 逐工具安装 + Windows 说明
+    ├── INSTALL.md            # 逐工具安装 + Windows 说明
+    └── V2_CHAT_SYNC_DESIGN.md
 ```
+
 
 ## 同类项目
 

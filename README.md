@@ -38,6 +38,16 @@ correct way to make a skill genuinely shared and switchable across tools:
    travels with Git.
 2. Document the **per-tool invocation syntax** so people actually use it right.
 
+It has since grown two more layers that solve the *other* half of the
+multi-agent problem — your **conversations** are just as siloed as your skills:
+
+| Layer | What it does | Entry point |
+|-------|--------------|-------------|
+| **① Share skills** | One `SKILL.md` → every agent's repo dir, then `git commit`. | [`scripts/distribute.py`](scripts/distribute.py) |
+| **② Sync & hand off chats** | Read all agents' local histories into one neutral archive; package one chat so another agent can *legitimately* continue it. | [`scripts/sync_chats.py`](scripts/sync_chats.py), [`scripts/handoff_chat.py`](scripts/handoff_chat.py) |
+| **③ Conduit menu-bar app** | A native macOS tray app that wraps all of the above behind a UI. | [`app/`](app/) |
+
+
 ---
 
 ## Why it's tricky (the 30-second version)
@@ -124,6 +134,82 @@ reminding you to commit.
 
 ---
 
+## ② Sync & hand off conversations across agents
+
+Skills aren't the only thing that's siloed — your **chat histories** are too.
+Each tool keeps its transcripts in its own place and its own format:
+
+| Agent | Where its history lives | Format |
+|-------|-------------------------|--------|
+| **Claude Code** | `~/.claude/projects/**/*.jsonl` | JSONL |
+| **WorkBuddy** | `~/.workbuddy/**` | JSONL |
+| **Codex CLI** | `~/.codex/sessions/**/*.jsonl` | JSONL |
+| **Cursor** | `state.vscdb` (SQLite) | SQLite blobs |
+| **Antigravity** | workspace SQLite stores | SQLite |
+
+Two read-only tools bridge them (both **pure Python stdlib**, nothing to install):
+
+**`sync_chats.py`** — read every agent's local history into one neutral,
+searchable archive plus an offline HTML timeline:
+
+```bash
+# aggregate all detected agents into ./chat-archive + a merged HTML timeline
+python3 scripts/sync_chats.py --out ./chat-archive
+```
+
+**`handoff_chat.py`** — package *one* conversation into paste-ready text so a
+different agent can continue it in a **legitimately new session** (no forged
+IDs, no fake history injection):
+
+```bash
+# turn one Codex session into a hand-off block you can paste into Claude Code
+python3 scripts/handoff_chat.py --session <id> --to claude
+```
+
+Design notes and the canonical message model live in
+[`docs/V2_CHAT_SYNC_DESIGN.md`](docs/V2_CHAT_SYNC_DESIGN.md) and
+[`scripts/README_chatsync.md`](scripts/README_chatsync.md).
+
+---
+
+## ③ Conduit — the menu-bar app
+
+<p align="center">
+  <em>one workspace, every agent</em>
+</p>
+
+**Conduit** is a native macOS menu-bar app that wraps all of the above behind a
+clean UI — share skills, hand off chats, and browse a unified history without
+touching the command line.
+
+- **Native & tiny** — SwiftUI + AppKit (`NSStatusItem` tray + `NSPopover`),
+  builds with **Command Line Tools only, no Xcode required**.
+- **Read-only by design** — agent detection and history reads never mutate your
+  data; SQLite is opened `immutable=1&mode=ro`.
+- **Reuses the Python core** — the UI just calls the same
+  `distribute.py` / `sync_chats.py` / `handoff_chat.py` scripts via `Process`.
+
+### Install (pre-built)
+
+Download `Conduit-x.y.z.dmg` from the
+[Releases page](https://github.com/BreetyGreen/multi-agent-skill-sharing/releases),
+open it, and drag **Conduit.app** into **Applications**. It's ad-hoc signed, so
+on first launch use **right-click → Open** to get past Gatekeeper.
+
+### Build from source
+
+```bash
+cd app
+./build.sh              # swift build -c release + assemble Conduit.app + icns + ad-hoc sign
+./package_dmg.sh        # (optional) produce a distributable .dmg
+open Conduit.app
+```
+
+See [`app/README.md`](app/README.md) for the full architecture, the
+debug/screenshot env-var switches, and the source layout.
+
+---
+
 ## Repository layout
 
 ```
@@ -132,12 +218,19 @@ multi-agent-skill-sharing/
 ├── LICENSE
 ├── skill/
 │   └── multi-agent-skill-sharing/
-│       └── SKILL.md          # the portable skill itself
+│       └── SKILL.md          # ① the portable skill itself
 ├── scripts/
-│   └── distribute.py         # cross-platform fan-out helper
+│   ├── distribute.py         # ① cross-platform skill fan-out helper
+│   ├── sync_chats.py         # ② aggregate all agents' history → archive + HTML
+│   ├── handoff_chat.py       # ② package one chat for a legit hand-off
+│   └── chatsync/             # ② canonical model + per-agent readers + exporters
+├── app/                      # ③ Conduit — SwiftUI menu-bar app (no Xcode needed)
+├── prototype/                # ③ high-fidelity interactive HTML prototype
 └── docs/
-    └── INSTALL.md            # per-tool install + Windows notes
+    ├── INSTALL.md            # per-tool install + Windows notes
+    └── V2_CHAT_SYNC_DESIGN.md
 ```
+
 
 ## Related projects
 

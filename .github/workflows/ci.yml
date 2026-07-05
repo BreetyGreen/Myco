@@ -24,3 +24,24 @@ jobs:
 
       - name: Dry-run the distributor (must not error)
         run: python3 scripts/distribute.py --src ./skill --dest . --dry-run
+
+      - name: Smoke-test chatsync (v2) imports & CLI help
+        run: |
+          python3 -c "import scripts.chatsync.canonical, scripts.chatsync.exporter, scripts.chatsync.html_viewer"
+          python3 scripts/sync_chats.py --help
+          python3 scripts/handoff_chat.py --help
+
+  build-app:
+    name: Build Conduit menu-bar app
+    runs-on: macos-14
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Show Swift toolchain
+        run: swift --version
+
+      - name: Build (release)
+        working-directory: app
+        run: swift build -c release
+

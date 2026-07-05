@@ -9,3 +9,22 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# WorkBuddy agent workspace (local memory / private notes — not for a public repo)
+.workbuddy/
+
+# Swift / Conduit app build artifacts
+app/.build/
+app/Conduit.app/
+app/*.dmg
+app/*.icns
+*.swiftpm
+
+# chatsync (v2): generated chat archive contains REAL private conversations.
+# Remove this line if you intentionally want to commit your archive.
+chat-archive/
+
+# chatsync handoff packages also contain real private conversation content.
+handoff-*.md
+
+

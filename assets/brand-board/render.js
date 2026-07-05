@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { Resvg } = require('@resvg/resvg-js');
 
 const jobs = [
@@ -6,7 +7,8 @@ const jobs = [
   { svg: 'assets/logo-wordmark.svg', png: 'assets/logo-wordmark.png', width: 1040 },
 ];
 
-const base = '/Users/einar/projects/multi-agent-skill-sharing/';
+// repo root = two levels up from this file (assets/brand-board/render.js)
+const base = path.resolve(__dirname, '..', '..') + path.sep;
 
 for (const j of jobs) {
   const svg = fs.readFileSync(base + j.svg, 'utf8');
