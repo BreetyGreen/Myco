@@ -20,6 +20,18 @@ commands on top (e.g. gstack), but that's an add-on, not the base mechanism.
 
 ---
 
+## WorkBuddy
+
+| Scope | Path |
+|-------|------|
+| User | `~/.workbuddy/skills/<skill>/SKILL.md` |
+| Repo | `<repo>/.workbuddy/skills/<skill>/SKILL.md` |
+
+Invoke by mentioning the skill by name in chat (same convention as Claude Code).
+Sessions live under `~/.workbuddy/projects/` as one JSONL file per conversation.
+
+---
+
 ## Codex CLI
 
 Two conventions exist in the wild — install into **both** to be safe.
@@ -56,6 +68,23 @@ Cursor uses a **rules** format (`.mdc` files), not `SKILL.md`.
 
 Rules auto-inject based on their frontmatter globs. Cursor also tolerates
 `.agents/` skills in some setups.
+
+---
+
+## Antigravity
+
+Antigravity is VS Code–based (like Cursor), so it has no official `SKILL.md`
+mechanism yet. The **convention** Myco uses:
+
+| Scope | Path |
+|-------|------|
+| Repo | `<repo>/.antigravity/skills/<skill>/SKILL.md` |
+
+Sessions are stored in a SQLite KV database
+(`~/Library/Application Support/Antigravity/User/globalStorage/state.vscdb`),
+which Myco opens **read-only** to count/read conversations. Treat the skill
+path as unverified-by-vendor — mention the skill by name and confirm the tool
+picks it up.
 
 ---
 

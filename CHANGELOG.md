@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+- **Aligned all docs with the real detected agent set.** README (en + zh),
+  `CONTRIBUTING.md`, `docs/INSTALL.md` and the skill's `SKILL.md` said the five
+  agents were Claude / Codex / Cursor / **Gemini** / **Cline**, but since 0.3.1
+  the app actually detects and connects Claude Code / **WorkBuddy** / Codex CLI
+  / Cursor / **Antigravity** (per `engine/agents.json`). Updated the "forest"
+  narrative, the 30-second skill table, and the Share-tab examples to match;
+  added WorkBuddy + Antigravity sections/rows to `INSTALL.md` and `SKILL.md`
+  (Gemini/Cline kept as additional `.agents`/`.cline` distribution targets).
+- **`CONTRIBUTING.md`: corrected the "adding a new agent" workflow.** It told
+  contributors to edit three code paths; since 0.3.1 `engine/agents.json` is the
+  single source of truth (read by both Swift and Python), so adding an agent is
+  a one-file JSON edit — docs are updated separately for human readers.
+- **New `AGENTS.md`** at the repo root (read by Codex directly): a concise
+  orientation for any AI/contributor picking up the project from a fresh clone —
+  what Myco is, the app+engine architecture, `agents.json` as the source of
+  truth, build steps, and exactly what does/doesn't travel with the repo.
+
 ## [0.3.1] — 2026-07-06
 
 Bug-fix release: fixes the README logo (invisible on GitHub's dark theme),

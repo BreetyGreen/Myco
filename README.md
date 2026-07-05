@@ -27,7 +27,7 @@
 Mushrooms are just the fruit; the real organism is the **mycelium** underground —
 a living network that connects an entire forest and lets every tree share
 nutrients and signals. Your AI coding agents are that forest: **Claude Code**,
-**Codex CLI**, **Cursor**, **Gemini CLI**, **Cline** — each powerful, each
+**WorkBuddy**, **Codex CLI**, **Cursor**, **Antigravity** — each powerful, each
 completely walled off from the others.
 
 **Myco is the mycelium.** A single native macOS menu-bar app that quietly
@@ -74,7 +74,7 @@ Myco opens to five tabs, each a capability rather than a separate tool:
 | Tab | What it does |
 |-----|--------------|
 | **总览 / Home** | At-a-glance view of which agents are installed on this Mac and how many sessions each holds. |
-| **共享 / Share** | Pick a skill, choose which agents to fan it out to (`.claude` / `.codex` / `.agents` / `.cline`), preview, then write. Commit and the whole team is in sync. |
+| **共享 / Share** | Pick a skill, choose which agents to fan it out to (`.claude` / `.workbuddy` / `.codex` / `.agents` …), preview, then write. Commit and the whole team is in sync. |
 | **接力 / Relay** | Pick a past conversation and package it as paste-ready text to continue in a *different* agent. |
 | **历史 / History** | The merged, searchable timeline across all detected agents. |
 | **设置 / Settings** | Theme, agent toggles, work directory. |
@@ -96,14 +96,24 @@ skills from a *different* repo directory:
 | Agent | Repo-level dir (travels with Git) | How you invoke it |
 |-------|-----------------------------------|-------------------|
 | **Claude Code** | `.claude/skills/` | mention the skill by name (some suites add `/slash`) |
-| **Codex CLI** | `.agents/skills/` and/or `.codex/skills/` | `$skill-name`, `/skills`, or name it — **not** `/design` |
-| **Cursor** | `.cursor/rules/` (rules format) | rules auto-inject; also tolerates `.agents/` |
-| **Gemini CLI** | `.agents/skills/` | name it in the prompt |
-| **Cline** | `.cline/skills/`, `.clinerules/skills/`, or `.claude/skills/` | name it (experimental toggle) |
+| **WorkBuddy** | `.workbuddy/skills/` | mention the skill by name |
+| **Codex CLI** | `.codex/skills/` and/or `.agents/skills/` | `$skill-name`, `/skills`, or name it — **not** `/design` |
+| **Cursor** | `.cursor/skills/` (also reads `.cursor/rules/` `.mdc`) | rules auto-inject; also tolerates `.agents/` |
+| **Antigravity** | `.antigravity/skills/` (VS Code–based, convention) | mention the skill by name |
+
+> `.agents/skills/` is the emerging **cross-agent** path (Codex, Gemini CLI and
+> Cursor all read it; Cline tolerates `.claude/skills/`). When you can maintain
+> only one extra path, `.agents/skills/` is the safest bet — which is why Myco
+> offers it as a distribution target alongside the five above.
+
+These are the five agents Myco **detects and connects** on your Mac. Skill
+paths across all these tools drift fast; Myco keeps the mapping in one place
+([`engine/agents.json`](engine/agents.json)) so you never have to.
 
 **Conversations are siloed too.** Each tool keeps its transcripts in its own
-place and format — JSONL here, SQLite blobs there — so context you built up in
-one agent is invisible to the next.
+place and format — JSONL here (Claude / WorkBuddy / Codex), SQLite blobs there
+(Cursor / Antigravity) — so context you built up in one agent is invisible to
+the next.
 
 Myco knows all of these locations and formats, and bridges them for you. That's
 the whole point: you shouldn't have to memorize this table — the app does.

@@ -50,8 +50,10 @@ agent, all committed, all in sync.
 | Agent | Repo-level dir (travels with Git) | User-level dir | How to invoke |
 |-------|-----------------------------------|----------------|---------------|
 | **Claude Code** | `<repo>/.claude/skills/` | `~/.claude/skills/` | Mention the skill by name in chat. Some suites (e.g. gstack) add `/slash` commands on top. |
+| **WorkBuddy** | `<repo>/.workbuddy/skills/` | `~/.workbuddy/skills/` | Mention the skill by name (same convention as Claude Code). |
 | **Codex CLI** | `<repo>/.agents/skills/` **and/or** `<repo>/.codex/skills/` (see note) | `~/.agents/skills/` **or** `~/.codex/skills/` (see note) | `$skill-name`, the `/skills` picker, or just name it in the prompt. **NOT** a `/design`-style slash command. |
-| **Cursor** | `<repo>/.cursor/rules/` (rules format, *not* SKILL.md) | — | Rules auto-inject; also tolerates `.agents/` skills. |
+| **Cursor** | `<repo>/.cursor/skills/` (also reads `.cursor/rules/` `.mdc`) | — | Rules auto-inject; also tolerates `.agents/` skills. |
+| **Antigravity** | `<repo>/.antigravity/skills/` (VS Code–based, convention) | — | Mention the skill by name; vendor path unverified. |
 | **Gemini CLI** | `<repo>/.agents/skills/` | — | Auto-discovered; name it in the prompt. |
 | **Cline** | `<repo>/.cline/skills/`, `.clinerules/skills/`, **or** `.claude/skills/` | `~/.cline/skills/` | Name it; gated behind an experimental toggle. |
 
@@ -199,6 +201,6 @@ git commit -m "chore: share skills across AI agents"
 
 ---
 
-**Last verified:** 2026-07 against Claude Code, Codex CLI, Cursor, Gemini CLI,
-and Cline conventions. Skill-discovery paths change frequently — re-check the
-per-tool docs if something doesn't resolve.
+**Last verified:** 2026-07 against Claude Code, WorkBuddy, Codex CLI, Cursor,
+Antigravity (plus Gemini CLI and Cline) conventions. Skill-discovery paths
+change frequently — re-check the per-tool docs if something doesn't resolve.

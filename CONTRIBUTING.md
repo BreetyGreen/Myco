@@ -2,7 +2,7 @@
 
 Thanks for helping keep this project accurate. The **single most valuable**
 contribution here is keeping the per-tool skill paths current — they drift fast
-as Claude Code, Codex CLI, Cursor, Gemini CLI and Cline evolve.
+as Claude Code, WorkBuddy, Codex CLI, Cursor and Antigravity evolve.
 
 ## The kind of PR we want most: path updates
 
@@ -44,11 +44,22 @@ temp dir still land a `SKILL.md` under each target directory.
 ## Adding a new agent
 
 Adding support for another tool (Windsurf, Aider, Continue, Zed, …)? Great.
-Please update **all three** places so they stay in sync:
+Since **v0.3.1 there is a single source of truth**:
+[`engine/agents.json`](engine/agents.json). Both the Swift app
+(`AgentDetector`) and the Python engine (`distribute.py`) read it, so detection
+and skill-distribution can never drift apart. **Adding an agent is one JSON
+edit — no recompile, no touching two code paths.**
 
-- `docs/INSTALL.md` — a section + Windows equivalent
-- `skills/.../SKILL.md` — the compatibility table
-- `engine/distribute.py` — the target-directory list
+1. **Add an entry to `engine/agents.json`** — give it an `id`, `display`,
+   `initial`, detection `root`/`detail`, a `sessions` block (`jsonl` with
+   `dirs`, or `sqlite` with `db` + `query`), and its `skillDir`. That's the
+   whole functional change.
+2. **Update the human-facing docs so they match** (these are read by people,
+   not code):
+   - `docs/INSTALL.md` — a section + Windows equivalent
+   - `skills/.../SKILL.md` — the compatibility table
+   - `README.md` / `README.zh-CN.md` — the 30-second table
+3. **Add a CHANGELOG entry** under `[Unreleased]`.
 
 Include your verification notes (see above) in the PR description.
 
