@@ -1,0 +1,46 @@
+name: Release macOS DMG
+
+# 在 GitHub 的 macOS 跑机上打 DMG 并挂到对应 Release。
+# 触发方式：
+#   - 手动（workflow_dispatch）：填一个已存在的 tag，如 v0.4.0
+#   - 自动：发布新 Release 时（此时 Windows 产物通常已由本地 build.ps1 上传）
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to build & upload the DMG for (e.g. v0.4.0)"
+        required: true
+        type: string
+  release:
+    types: [published]
+
+permissions:
+  contents: write   # gh release upload 需要
+
+jobs:
+  dmg:
+    name: Build & upload Myco.dmg
+    runs-on: macos-14
+    env:
+      TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.event.release.tag_name }}
+    steps:
+      - name: Check out the tagged commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+
+      - name: Derive version from tag (v0.4.0 -> 0.4.0)
+        run: echo "MYCO_VERSION=${TAG#v}" >> "$GITHUB_ENV"
+
+      - name: Build self-contained Myco.app
+        working-directory: app
+        run: ./build.sh
+
+      - name: Package DMG
+        working-directory: app
+        run: ./package_dmg.sh
+
+      - name: Upload DMG to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$TAG" app/Myco-"$MYCO_VERSION".dmg --clobber
