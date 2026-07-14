@@ -1,0 +1,119 @@
+<UserControl x:Class="Myco.Views.RelayView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <Ellipse Width="5" Height="5" Fill="{DynamicResource Brand}" VerticalAlignment="Center"/>
+            <TextBlock Text="会话接力" FontSize="10.5" FontWeight="SemiBold" Margin="7,0,0,0"
+                       Foreground="{DynamicResource Brand}"/>
+        </StackPanel>
+
+        <TextBlock Text="换个工具，接着聊" FontSize="15" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Text}" Margin="0,0,0,4"/>
+        <TextBlock FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource Text2}" Margin="0,0,0,12"
+                   Text="把 A 产品的一段对话打包成可粘贴文本，在 B 产品用它自发的合法新会话继续——不伪造 ID、不写回任何库。"/>
+
+        <!-- 状态一：会话列表 -->
+        <StackPanel x:Name="ListPane">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <Ellipse Width="5" Height="5" Fill="{DynamicResource Brand}" VerticalAlignment="Center"/>
+                <TextBlock Text="选择要接力的会话" FontSize="10.5" FontWeight="SemiBold" Margin="7,0,0,0"
+                           Foreground="{DynamicResource Brand}"/>
+            </StackPanel>
+            <ItemsControl x:Name="SessionsList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Style="{StaticResource FlatBtn}" Click="OnPick" Margin="0,0,0,7">
+                            <Border CornerRadius="12" Background="{DynamicResource Card2}" Padding="11"
+                                    BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Width="28" Height="28" CornerRadius="8"
+                                            Background="{Binding Badge}">
+                                        <TextBlock Text="{Binding Initial}" FontSize="13" FontWeight="ExtraBold"
+                                                   Foreground="White" HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="11,0,8,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource Text}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Meta}" FontSize="11" FontFamily="Consolas"
+                                                   Foreground="{DynamicResource Text3}"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="2" Text="&#xE76C;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="12" Foreground="{DynamicResource Text3}"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock x:Name="EmptyHint" Text="未检测到会话" FontSize="12" Margin="0,20,0,20"
+                       HorizontalAlignment="Center" Foreground="{DynamicResource Text3}"
+                       Visibility="Collapsed"/>
+        </StackPanel>
+
+        <!-- 状态二：已选会话 → 模式 → 生成 -->
+        <StackPanel x:Name="PickedPane" Visibility="Collapsed">
+            <Border CornerRadius="12" Background="{DynamicResource Card}" Padding="13" Margin="0,0,0,12"
+                    BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border x:Name="PickedBadge" Grid.Column="0" Width="30" Height="30" CornerRadius="8">
+                        <TextBlock x:Name="PickedInitial" FontSize="13" FontWeight="ExtraBold"
+                                   Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="11,0,8,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="PickedTitle" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Text}" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock x:Name="PickedMeta" FontSize="11" FontFamily="Consolas"
+                                   Foreground="{DynamicResource Text3}"/>
+                    </StackPanel>
+                    <Button Grid.Column="2" Style="{StaticResource FlatBtn}" Click="OnUnpick"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Text3}"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <Ellipse Width="5" Height="5" Fill="{DynamicResource Brand}" VerticalAlignment="Center"/>
+                <TextBlock Text="打包模式" FontSize="10.5" FontWeight="SemiBold" Margin="7,0,0,0"
+                           Foreground="{DynamicResource Brand}"/>
+            </StackPanel>
+            <StackPanel x:Name="ModeRow" Orientation="Horizontal" Margin="0,0,0,12"/>
+
+            <Button x:Name="GenBtn" Style="{StaticResource PrimaryBtn}" Click="OnGenerate"
+                    Content="生成接力包" Margin="0,0,0,12"/>
+
+            <Border x:Name="ResultCard" CornerRadius="11" Background="{DynamicResource Card2}"
+                    Padding="11" Visibility="Collapsed">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Width="3" CornerRadius="2" Background="{DynamicResource Brand}"/>
+                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                        <TextBlock x:Name="ResultTitle" Text="接力包已生成" FontSize="12" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Brand}" Margin="0,0,0,4"/>
+                        <TextBlock x:Name="ResultText" FontSize="11" FontFamily="Consolas"
+                                   TextWrapping="Wrap" Foreground="{DynamicResource Text2}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Myco Windows 外壳：WPF 面板 + WinForms NotifyIcon 托盘（均为 .NET 自带，零 NuGet 依赖）。
+       与 macOS 版共用同一 Python 引擎（../engine）与 agents.json 注册表。 -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Myco</AssemblyName>
+    <RootNamespace>Myco</RootNamespace>
+    <Version>0.4.0</Version>
+  </PropertyGroup>
+
+  <!-- WinForms 只用于 NotifyIcon（App.xaml.cs 里显式别名引用），
+       移除隐式 using 以免与 WPF 的 Application/UserControl/Brush 等撞名。 -->
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms"/>
+    <Using Remove="System.Drawing"/>
+  </ItemGroup>
+
+</Project>

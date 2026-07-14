@@ -1,0 +1,143 @@
+<UserControl x:Class="Myco.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+
+        <!-- 眉标 -->
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <Ellipse Width="5" Height="5" Fill="{DynamicResource Brand}" VerticalAlignment="Center"/>
+            <TextBlock Text="本机概览" FontSize="10.5" FontWeight="SemiBold" Margin="7,0,0,0"
+                       Foreground="{DynamicResource Brand}"/>
+        </StackPanel>
+
+        <TextBlock x:Name="Summary" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,14"
+                   Foreground="{DynamicResource Text2}"/>
+
+        <!-- 统计三卡 -->
+        <UniformGrid Rows="1" Columns="3" Margin="0,0,0,16">
+            <Border CornerRadius="12" Background="{DynamicResource Card}" Padding="11" Margin="0,0,9,0"
+                    BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
+                <StackPanel>
+                    <TextBlock x:Name="StatAgents" FontSize="24" FontWeight="Bold"
+                               Foreground="{DynamicResource Brand}"/>
+                    <TextBlock Text="已装 agent" FontSize="10.5" Foreground="{DynamicResource Text3}"/>
+                </StackPanel>
+            </Border>
+            <Border CornerRadius="12" Background="{DynamicResource Card}" Padding="11" Margin="0,0,9,0"
+                    BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
+                <StackPanel>
+                    <TextBlock x:Name="StatSessions" FontSize="24" FontWeight="Bold"
+                               Foreground="{DynamicResource Text}"/>
+                    <TextBlock Text="会话总数" FontSize="10.5" Foreground="{DynamicResource Text3}"/>
+                </StackPanel>
+            </Border>
+            <Border CornerRadius="12" Background="{DynamicResource Card}" Padding="11"
+                    BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
+                <StackPanel>
+                    <TextBlock x:Name="StatSkills" FontSize="24" FontWeight="Bold"
+                               Foreground="{DynamicResource Text}"/>
+                    <TextBlock Text="可分发 skill" FontSize="10.5" Foreground="{DynamicResource Text3}"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- agent 列表 -->
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+            <Ellipse Width="5" Height="5" Fill="{DynamicResource Brand}" VerticalAlignment="Center"/>
+            <TextBlock Text="AGENTS" FontSize="10.5" FontWeight="SemiBold" Margin="7,0,0,0"
+                       Foreground="{DynamicResource Brand}"/>
+        </StackPanel>
+        <ItemsControl x:Name="AgentsList" Margin="0,0,0,10">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border CornerRadius="12" Background="{DynamicResource Card2}" Margin="0,0,0,7"
+                            BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6"
+                            Padding="11,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Width="30" Height="30" CornerRadius="9"
+                                    Background="{Binding Badge}">
+                                <TextBlock Text="{Binding Initial}" FontSize="13" FontWeight="ExtraBold"
+                                           Foreground="White" HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Display}" FontSize="13" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource Text}"/>
+                                <TextBlock Text="{Binding Detail}" FontSize="11" FontFamily="Consolas"
+                                           Foreground="{DynamicResource Text3}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Ellipse Width="7" Height="7" Fill="{Binding DotBrush}"
+                                         VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="{Binding CountLabel}" FontSize="11.5" FontWeight="SemiBold"
+                                           Foreground="{Binding CountBrush}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- 两个 CTA -->
+        <UniformGrid Rows="1" Columns="2" Margin="0,0,0,16">
+            <Button Style="{StaticResource FlatBtn}" Click="OnGoShare" Margin="0,0,9,0">
+                <Border CornerRadius="13" Background="{DynamicResource Card}" Padding="13"
+                        BorderBrush="{DynamicResource Line}" BorderThickness="0.6">
+                    <StackPanel>
+                        <Border Width="26" Height="26" CornerRadius="8" HorizontalAlignment="Left"
+                                Background="{DynamicResource BrandTint}" Margin="0,0,0,9">
+                            <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                       Foreground="{DynamicResource Brand}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="共享 skill" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Text}"/>
+                        <TextBlock Text="扇出到各 agent" FontSize="10.5" Margin="0,2,0,0"
+                                   Foreground="{DynamicResource Text3}"/>
+                    </StackPanel>
+                </Border>
+            </Button>
+            <Button Style="{StaticResource FlatBtn}" Click="OnGoRelay">
+                <Border CornerRadius="13" Background="{DynamicResource Card}" Padding="13"
+                        BorderBrush="{DynamicResource Line}" BorderThickness="0.6">
+                    <StackPanel>
+                        <Border Width="26" Height="26" CornerRadius="8" HorizontalAlignment="Left"
+                                Background="{DynamicResource BrandTint}" Margin="0,0,0,9">
+                            <TextBlock Text="&#xE8AB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                       Foreground="{DynamicResource Brand}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="会话接力" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Text}"/>
+                        <TextBlock Text="换个工具接着聊" FontSize="10.5" Margin="0,2,0,0"
+                                   Foreground="{DynamicResource Text3}"/>
+                    </StackPanel>
+                </Border>
+            </Button>
+        </UniformGrid>
+
+        <!-- 隐私承诺 -->
+        <Border CornerRadius="11" Background="{DynamicResource Card2}" Padding="11">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Width="3" CornerRadius="2"
+                        Background="{DynamicResource Brand}"/>
+                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                    <TextBlock Text="隐私承诺" FontSize="12" FontWeight="SemiBold"
+                               Foreground="{DynamicResource Brand}" Margin="0,0,0,4"/>
+                    <TextBlock FontSize="11.5" TextWrapping="Wrap" Foreground="{DynamicResource Text2}"
+                               Text="全程只读本地会话；SQLite 一律以只读模式打开，绝不写回任何 agent 运行库；接力/归档只产出文本，目标会话使用其产品自发的合法新 ID，不伪造。"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+    </StackPanel>
+</UserControl>

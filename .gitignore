@@ -28,3 +28,9 @@ chat-archive/
 handoff-*.md
 
 
+
+# Windows app build artifacts
+app-windows/bin/
+app-windows/obj/
+app-windows/dist/
+

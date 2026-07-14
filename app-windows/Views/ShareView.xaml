@@ -1,0 +1,134 @@
+<UserControl x:Class="Myco.Views.ShareView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="B2V"/>
+    </UserControl.Resources>
+    <StackPanel>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <Ellipse Width="5" Height="5" Fill="{DynamicResource Brand}" VerticalAlignment="Center"/>
+            <TextBlock Text="SKILL 共享" FontSize="10.5" FontWeight="SemiBold" Margin="7,0,0,0"
+                       Foreground="{DynamicResource Brand}"/>
+        </StackPanel>
+
+        <TextBlock Text="一次编写，每个 agent 都能用" FontSize="15" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Text}" Margin="0,0,0,4"/>
+        <TextBlock FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource Text2}" Margin="0,0,0,12"
+                   Text="选一个源 skill，扇出到各 agent 的仓库目录；git commit 后全团队每个工具都能读到。"/>
+
+        <!-- 源 skill 卡 -->
+        <Border x:Name="SkillCard" CornerRadius="12" Background="{DynamicResource Card}" Padding="13"
+                BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Width="32" Height="32" CornerRadius="9"
+                        Background="{DynamicResource BrandTint}">
+                    <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="15"
+                               Foreground="{DynamicResource Brand}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center">
+                    <TextBlock x:Name="SkillName" FontSize="13" FontWeight="SemiBold"
+                               Foreground="{DynamicResource Text}"/>
+                    <TextBlock x:Name="SkillDesc" FontSize="11" TextWrapping="Wrap" MaxHeight="30"
+                               Foreground="{DynamicResource Text3}"/>
+                </StackPanel>
+                <Button x:Name="CycleBtn" Grid.Column="2" Style="{StaticResource FlatBtn}"
+                        Click="OnCycleSkill" VerticalAlignment="Center" Visibility="Collapsed">
+                    <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource Text2}"/>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- 目标勾选 -->
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+            <Ellipse Width="5" Height="5" Fill="{DynamicResource Brand}" VerticalAlignment="Center"/>
+            <TextBlock Text="扇出到" FontSize="10.5" FontWeight="SemiBold" Margin="7,0,0,0"
+                       Foreground="{DynamicResource Brand}"/>
+        </StackPanel>
+        <ItemsControl x:Name="TargetsList" Margin="0,0,0,6">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Style="{StaticResource FlatBtn}" Click="OnToggleTarget" Margin="0,0,0,7">
+                        <Border CornerRadius="12" Padding="11,9"
+                                Background="{DynamicResource Card2}"
+                                BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- 自绘 checkbox -->
+                                <Border Grid.Column="0" Width="20" Height="20" CornerRadius="6"
+                                        BorderBrush="{DynamicResource Brand}" BorderThickness="1.4"
+                                        VerticalAlignment="Center">
+                                    <Border CornerRadius="4.5" Background="{DynamicResource Brand}"
+                                            Visibility="{Binding Checked, Converter={StaticResource B2V}}">
+                                        <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                                   FontWeight="Bold" Foreground="{DynamicResource PrimaryFg}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Border>
+                                <StackPanel Grid.Column="1" Margin="11,0,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Label}" FontSize="13" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource Text}"/>
+                                        <Border CornerRadius="8" Background="{DynamicResource BrandTint}"
+                                                Padding="6,2" Margin="6,0,0,0"
+                                                Visibility="{Binding Recommended, Converter={StaticResource B2V}}">
+                                            <TextBlock Text="推荐" FontSize="9" FontWeight="Bold"
+                                                       Foreground="{DynamicResource Brand}"/>
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding DirLabel}" FontSize="10.5" FontFamily="Consolas"
+                                               Foreground="{DynamicResource Text3}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- dry-run 开关 -->
+        <CheckBox x:Name="DryRun" IsChecked="True" Margin="0,0,0,12" Cursor="Hand">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="预演模式（dry-run）" FontSize="12.5" FontWeight="Medium"
+                           Foreground="{DynamicResource Text}"/>
+                <TextBlock Text="  只预览路径，不写文件" FontSize="10.5" VerticalAlignment="Center"
+                           Foreground="{DynamicResource Text3}"/>
+            </StackPanel>
+        </CheckBox>
+
+        <Button x:Name="GoBtn" Style="{StaticResource PrimaryBtn}" Click="OnDistribute"
+                Content="预演分发" Margin="0,0,0,12"/>
+
+        <!-- 结果 -->
+        <Border x:Name="ResultCard" CornerRadius="11" Background="{DynamicResource Card2}"
+                Padding="11" Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Width="3" CornerRadius="2" Background="{DynamicResource Brand}"/>
+                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                    <TextBlock x:Name="ResultTitle" FontSize="12" FontWeight="SemiBold"
+                               Foreground="{DynamicResource Brand}" Margin="0,0,0,4"/>
+                    <TextBlock x:Name="ResultText" FontSize="11" FontFamily="Consolas"
+                               TextWrapping="Wrap" Foreground="{DynamicResource Text2}"/>
+                    <TextBlock x:Name="GitHint" FontSize="11" Margin="0,4,0,0" Visibility="Collapsed"
+                               Foreground="{DynamicResource Warn}"
+                               Text="别忘了 git commit —— 没进 Git 就不算共享。"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+    </StackPanel>
+</UserControl>
