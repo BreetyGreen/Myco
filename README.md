@@ -48,22 +48,13 @@ All of it from the menu bar. No command line, nothing to configure.
 
 <p align="center">
   <a href="https://github.com/BreetyGreen/Myco/releases/latest">
-    <img src="https://img.shields.io/badge/⬇%20Download%20Myco-.dmg-639922?style=for-the-badge" alt="Download Myco">
+    <img src="https://img.shields.io/badge/⬇%20Windows-Setup.exe%20%2F%20.zip-639922?style=for-the-badge" alt="Download for Windows">
+  </a>
+  &nbsp;
+  <a href="https://github.com/BreetyGreen/Myco/releases/tag/v0.3.1">
+    <img src="https://img.shields.io/badge/⬇%20macOS-.dmg-639922?style=for-the-badge" alt="Download for macOS">
   </a>
 </p>
-
-1. Download **`Myco-x.y.z.dmg`** from the
-   [latest release](https://github.com/BreetyGreen/Myco/releases/latest).
-2. Open the DMG and drag **`Myco.app`** into **Applications**.
-3. First launch: because the app is ad-hoc signed (not notarized), macOS
-   Gatekeeper will hesitate. **Right-click `Myco.app` → Open → Open** once, and
-   you're set.
-
-Myco then lives in your menu bar (the stacked-tiles icon at the top-right).
-Click it and everything is one panel away.
-
-> **Requirements:** macOS 13+. That's it — Myco is fully self-contained and uses
-> the `python3` that already ships with macOS. Nothing else to install.
 
 ### Windows
 
@@ -75,9 +66,26 @@ Two options on the [latest release](https://github.com/BreetyGreen/Myco/releases
   `Myco.exe`, delete the folder to remove.
 
 Either way, Myco lives in the system tray (bottom-right stacked-tiles icon).
+SmartScreen may warn on first run (unsigned): **More info → Run anyway**, once.
 
-> **Requirements:** Windows 10/11. The zip is fully self-contained — .NET
-> runtime and an embedded Python are bundled; nothing else to install.
+> **Requirements:** Windows 10/11. Fully self-contained — .NET runtime and an
+> embedded Python are bundled; nothing else to install.
+
+### macOS
+
+1. Download **`Myco-x.y.z.dmg`** from
+   [v0.3.1](https://github.com/BreetyGreen/Myco/releases/tag/v0.3.1) — the
+   newest release that ships a DMG (a 0.4.0 DMG will be attached once packaged
+   on a Mac; the engine changes don't affect 0.3.1 behavior).
+2. Open the DMG and drag **`Myco.app`** into **Applications**.
+3. First launch: because the app is ad-hoc signed (not notarized), macOS
+   Gatekeeper will hesitate. **Right-click `Myco.app` → Open → Open** once, and
+   you're set.
+
+Myco then lives in your menu bar (the stacked-tiles icon at the top-right).
+
+> **Requirements:** macOS 13+. That's it — Myco is fully self-contained and uses
+> the `python3` that already ships with macOS. Nothing else to install.
 
 📖 Illustrated **user guide** (install, every tab explained, FAQ):
 [docs/USER-GUIDE.md](docs/USER-GUIDE.md) · [中文版](docs/USER-GUIDE.zh-CN.md)

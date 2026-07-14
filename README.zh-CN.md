@@ -40,17 +40,13 @@
 
 <p align="center">
   <a href="https://github.com/BreetyGreen/Myco/releases/latest">
-    <img src="https://img.shields.io/badge/⬇%20下载%20Myco-.dmg-639922?style=for-the-badge" alt="下载 Myco">
+    <img src="https://img.shields.io/badge/⬇%20Windows-Setup.exe%20%2F%20.zip-639922?style=for-the-badge" alt="下载 Windows 版">
+  </a>
+  &nbsp;
+  <a href="https://github.com/BreetyGreen/Myco/releases/tag/v0.3.1">
+    <img src="https://img.shields.io/badge/⬇%20macOS-.dmg-639922?style=for-the-badge" alt="下载 macOS 版">
   </a>
 </p>
-
-1. 从[最新 Release](https://github.com/BreetyGreen/Myco/releases/latest) 下载 **`Myco-x.y.z.dmg`**。
-2. 打开 DMG，把 **`Myco.app`** 拖进**「应用程序」**。
-3. 首次启动：因为 App 是 ad-hoc 签名（未经 Apple 公证），Gatekeeper 会拦一下。**右键点 `Myco.app` → 打开 → 打开**，一次即可。
-
-之后 Myco 就常驻在菜单栏（顶部右侧那个三层叠图标）。点开它，所有功能都在同一个面板里。
-
-> **系统要求：** macOS 13+。仅此而已 —— Myco 完全自包含，用的是 macOS 自带的 `python3`，不需要装任何其它东西。
 
 ### Windows
 
@@ -59,9 +55,20 @@
 - **`Myco-Setup-x.y.z.exe`**（推荐）—— 标准安装向导：按用户安装（无需管理员）、开始菜单快捷方式、可在「设置 → 应用」里卸载。
 - **`Myco-win-x.y.z.zip`**（便携版）—— 解压即用，删掉文件夹即卸载。
 
-装好后 Myco 常驻系统托盘（任务栏右下角三层叠图标）。
+装好后 Myco 常驻系统托盘（任务栏右下角三层叠图标）。首次运行 SmartScreen
+可能拦一下（未签名）：**更多信息 → 仍要运行**，一次即可。
 
-> **系统要求：** Windows 10/11。zip 完全自包含 —— .NET 运行时和内嵌 Python 都已打包，不需要装任何其它东西。
+> **系统要求：** Windows 10/11。完全自包含 —— .NET 运行时和内嵌 Python 都已打包，不需要装任何其它东西。
+
+### macOS
+
+1. 从 [v0.3.1](https://github.com/BreetyGreen/Myco/releases/tag/v0.3.1) 下载 **`Myco-x.y.z.dmg`** —— 这是目前最新带 DMG 的版本（0.4.0 的 DMG 待在 Mac 上打包后补传；引擎改动不影响 0.3.1 的行为）。
+2. 打开 DMG，把 **`Myco.app`** 拖进**「应用程序」**。
+3. 首次启动：因为 App 是 ad-hoc 签名（未经 Apple 公证），Gatekeeper 会拦一下。**右键点 `Myco.app` → 打开 → 打开**，一次即可。
+
+之后 Myco 就常驻在菜单栏（顶部右侧那个三层叠图标）。
+
+> **系统要求：** macOS 13+。仅此而已 —— Myco 完全自包含，用的是 macOS 自带的 `python3`，不需要装任何其它东西。
 
 📖 图文版**使用指南**（安装、五大页面逐页介绍、FAQ）：[docs/USER-GUIDE.zh-CN.md](docs/USER-GUIDE.zh-CN.md) · [English](docs/USER-GUIDE.md)
 
