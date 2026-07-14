@@ -22,9 +22,12 @@ $dist = Join-Path $appDir 'dist'
 $stage = Join-Path $dist 'Myco-win'
 
 Write-Host "==> [1/4] dotnet publish (self-contained, win-x64, v$Version)"
+# 不用 PublishSingleFile：单文件 bundler 的"写入→立即重开"动作会被杀软
+# 实时扫描抢占句柄而失败（GenerateBundle: file in use）。普通自包含发布
+# 没有这个竞态，代价只是目录里多一批 DLL——双击 Myco.exe 的体验不变。
 if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
 dotnet publish "$appDir\Myco.csproj" -c Release -r win-x64 --self-contained `
-    -p:PublishSingleFile=true -p:Version=$Version -o $stage --nologo -v q
+    -p:Version=$Version -o $stage --nologo -v q
 if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed" }
 Get-ChildItem $stage -Filter '*.pdb' | Remove-Item
 

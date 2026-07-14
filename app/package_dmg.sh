@@ -6,7 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 APP_NAME="Myco"
 APP_BUNDLE="$APP_NAME.app"
-VERSION="${MYCO_VERSION:-0.3.2}"
+VERSION="${MYCO_VERSION:-0.4.0}"
 DMG_NAME="$APP_NAME-$VERSION.dmg"
 VOL_NAME="$APP_NAME $VERSION"
 

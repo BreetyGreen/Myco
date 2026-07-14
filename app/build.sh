@@ -12,7 +12,7 @@ BUILD_DIR=".build/release"
 APP_BUNDLE="$APP_NAME.app"
 CONTENTS="$APP_BUNDLE/Contents"
 REPO_ROOT="$(cd .. && pwd)"
-VERSION="${MYCO_VERSION:-0.3.2}"
+VERSION="${MYCO_VERSION:-0.4.0}"
 
 echo "==> [1/6] swift build -c release"
 swift build -c release

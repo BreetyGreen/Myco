@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-07-14
+
+Myco comes to Windows: a native tray app with full feature parity, the same
+Python engine underneath, and a fresh "dopamine" visual language with real
+acrylic glass on both themes.
+
 ### Added
 - **Windows app (`app-windows/`)** — a native WPF tray app with full feature
   parity to the macOS menu-bar app: tray icon + dark/light themed popup panel
@@ -26,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   macOS app is untouched.
 
 ### Changed
+- **Windows app: real acrylic glass.** The panel uses Win11 accent acrylic
+  (blur-behind) with translucent brand-tint layers and glassy cards —
+  material parity with the macOS NSPopover blur. Pre-Win11-22H2 systems
+  fall back to an opaque backdrop automatically.
 - **Windows app: "dopamine" visual refresh.** New token set built around a
   neon-lime gradient (#DCF87E→#A6E14F→#64AC28) with dark ink text on every
   bright surface: a hero session-count card on 总览, pill-shaped primary
@@ -198,7 +208,8 @@ First public release. **Install a skill once, use it across every AI coding agen
 ### Agents covered
 Claude Code · Codex CLI · Cursor · Gemini CLI · Cline
 
-[Unreleased]: https://github.com/BreetyGreen/Myco/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/BreetyGreen/Myco/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/BreetyGreen/Myco/compare/v0.3.2...v0.4.0
 [0.3.2]: https://github.com/BreetyGreen/Myco/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/BreetyGreen/Myco/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/BreetyGreen/Myco/compare/v0.2.0...v0.3.0
