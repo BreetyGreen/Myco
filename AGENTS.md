@@ -72,7 +72,8 @@ app/package_dmg.sh        # produce the distributable .dmg
 app-windows/PythonBridge.cs  # Windows Process bridge (same lookup order)
 app-windows/build.ps1     # dotnet publish → self-contained Myco-win zip
 skills/.../SKILL.md        # the portable skill Myco ships & distributes
-docs/                     # INSTALL (per-tool paths) + design notes
+docs/                     # INSTALL (per-tool paths) + user guides + design notes
+docs/RELEASING.md         # ★ how to cut a release, entirely from Windows
 CHANGELOG.md              # ★ read this to see where the project is right now
 ```
 
