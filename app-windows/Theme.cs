@@ -31,20 +31,21 @@ public static class Theme
         r["BrandTint"] = B(dark ? "#C9F45D" : "#639922", dark ? 0.13 : 0.10);
         r["Warn"]      = B(dark ? "#F0A93B" : "#D98324");
 
-        // 卡片改实色（多巴胺风：卡片有分量，背景干净）
-        r["Card"]     = dark ? B("#1C1F16") : B("#FFFFFF");
-        r["Card2"]    = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.035 : 0.03);
-        r["Line"]     = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.07 : 0.09);
-        r["LineSoft"] = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.045 : 0.055);
+        // 玻璃卡片：半透明 + 细亮描边，浮在 acrylic 模糊之上
+        r["Card"]     = dark ? B("#FFFFFF", 0.07) : B("#FFFFFF", 0.78);
+        r["Card2"]    = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.045 : 0.03);
+        r["Line"]     = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.10 : 0.09);
+        r["LineSoft"] = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.06 : 0.055);
 
-        // 背景：近黑炭（微绿暖）/ 奶油灰，弱化渐变，让荧光主卡成为唯一亮点
+        // 半透明品牌色染层：让 Win11 acrylic 的背景模糊透出来
+        // （GlassHelper 不可用时 PopupWindow 会把底层回退为同色系不透明）
         r["WallGrad"] = Grad(45,
-            dark ? "#14170C" : "#F2F1E9",
-            dark ? "#101207" : "#EEEFE6",
-            dark ? "#121313" : "#E9ECE0");
+            dark ? "#B314170C" : "#A6F2F1E9",
+            dark ? "#B3101207" : "#A6EEEFE6",
+            dark ? "#B3121313" : "#A6E9ECE0");
         r["PanelGrad"] = Grad(90,
-            dark ? "#CC181B0F" : "#99FFFFFF",   // 顶部（带透明度的 ARGB）
-            dark ? "#E60F1108" : "#CCFAFBF4");  // 底部
+            dark ? "#33181B0F" : "#59FFFFFF",   // 顶部（带透明度的 ARGB）
+            dark ? "#4D0F1108" : "#73FAFBF4");  // 底部
 
         // 荧光青柠渐变：主按钮 / 首页 hero 卡 / 激活 tab 药丸共用（signature）
         r["BrandGrad"] = Grad(45,

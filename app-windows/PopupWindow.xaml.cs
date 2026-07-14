@@ -12,6 +12,7 @@ public partial class PopupWindow : Window
     private readonly Dictionary<string, (Button btn, string glyph, string label)> _tabs;
     private DateTime _lastHide = DateTime.MinValue;
     private bool _pinned;   // 预览模式：不自动隐藏
+    private bool _glass;    // DWM acrylic 是否生效（Win11 22H2+）
 
     public PopupWindow()
     {
@@ -30,6 +31,7 @@ public partial class PopupWindow : Window
         Theme.Changed += () => Dispatcher.Invoke(() =>
         {
             ThemeGlyph.Text = Theme.Dark ? "" : "";   // 太阳 / 月亮
+            ApplyGlass();   // acrylic 深浅基调随主题切换
             UpdateTab();
         });
         Deactivated += (_, _) =>
@@ -39,6 +41,29 @@ public partial class PopupWindow : Window
             _lastHide = DateTime.UtcNow;
         };
         UpdateTab();
+    }
+
+    protected override void OnSourceInitialized(EventArgs e)
+    {
+        base.OnSourceInitialized(e);
+        ApplyGlass();
+    }
+
+    /// Win11 原生 acrylic 背板；不可用（旧系统）时把染层回退为不透明。
+    private void ApplyGlass()
+    {
+        var hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+        if (hwnd == IntPtr.Zero) return;
+        _glass = GlassHelper.Apply(hwnd, Theme.Dark);
+        if (!_glass)
+        {
+            TintBase.Background = new SolidColorBrush(
+                (Color)ColorConverter.ConvertFromString(Theme.Dark ? "#14170C" : "#F2F1E9"));
+        }
+        else
+        {
+            TintBase.SetResourceReference(BackgroundProperty, "WallGrad");
+        }
     }
 
     // ---- 弹出/隐藏 ----
