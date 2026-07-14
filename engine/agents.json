@@ -1,5 +1,5 @@
 {
-  "_comment": "Single source of truth for every AI agent Myco knows about. Both the Swift app (AgentDetector) and the Python engine (distribute.py) read THIS file, so detection and skill-distribution can never drift apart again. To support a new agent or a moved path, edit here — no need to touch two code paths. Paths may use a leading ~ for the user home.",
+  "_comment": "Single source of truth for every AI agent Myco knows about. The Swift app (AgentDetector), the Windows app and the Python engine (distribute.py / agent_status.py) all read THIS file, so detection and skill-distribution can never drift apart again. To support a new agent or a moved path, edit here — no need to touch two code paths. Paths may use a leading ~ for the user home. An agent may carry an optional \"windows\" block whose keys shallow-override the base (macOS) values on Windows; platforms that don't read it (Swift) simply ignore it.",
   "version": 1,
   "agents": [
     {
@@ -44,7 +44,15 @@
         "query": "SELECT COUNT(*) FROM ItemTable WHERE key LIKE '%chat%' OR key LIKE '%composer%';"
       },
       "skillDir": ".cursor/skills",
-      "skillSupport": "convention"
+      "skillSupport": "convention",
+      "windows": {
+        "root": "~/AppData/Roaming/Cursor",
+        "sessions": {
+          "kind": "sqlite",
+          "db": "~/AppData/Roaming/Cursor/User/globalStorage/state.vscdb",
+          "query": "SELECT COUNT(*) FROM ItemTable WHERE key LIKE '%chat%' OR key LIKE '%composer%';"
+        }
+      }
     },
     {
       "id": "antigravity",
@@ -58,7 +66,15 @@
         "query": "SELECT COUNT(*) FROM ItemTable WHERE key LIKE '%chat%' OR key LIKE '%composer%';"
       },
       "skillDir": ".antigravity/skills",
-      "skillSupport": "convention"
+      "skillSupport": "convention",
+      "windows": {
+        "root": "~/AppData/Roaming/Antigravity",
+        "sessions": {
+          "kind": "sqlite",
+          "db": "~/AppData/Roaming/Antigravity/User/globalStorage/state.vscdb",
+          "query": "SELECT COUNT(*) FROM ItemTable WHERE key LIKE '%chat%' OR key LIKE '%composer%';"
+        }
+      }
     }
   ],
   "extraSkillTargets": [

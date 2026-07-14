@@ -38,7 +38,9 @@ import glob
 import json
 import os
 import sqlite3
+import sys
 from typing import Any, Dict, Iterator, List, Optional
+from urllib.parse import quote
 
 from ..base import Reader
 from ..canonical import (
@@ -50,12 +52,26 @@ from ..canonical import (
 from .. import utils
 
 
+def _vscode_user_dir(app: str) -> str:
+    """Per-platform VSCode-style user dir for `app` (Cursor / Antigravity)."""
+    if sys.platform == "darwin":
+        return f"~/Library/Application Support/{app}/User"
+    if sys.platform.startswith("win"):
+        return f"~/AppData/Roaming/{app}/User"
+    return f"~/.config/{app}/User"
+
+
 def _connect_ro(path: str) -> Optional[sqlite3.Connection]:
     """Open a SQLite db strictly read-only, or return None on failure."""
     if not os.path.exists(path):
         return None
+    # URI form must use forward slashes and %-quoting (Windows paths contain
+    # backslashes and spaces that would otherwise corrupt the URI).
+    uri_path = quote(os.path.abspath(path).replace(os.sep, "/"))
+    if not uri_path.startswith("/"):
+        uri_path = "/" + uri_path
     try:
-        return sqlite3.connect(f"file:{path}?mode=ro", uri=True, timeout=2.0)
+        return sqlite3.connect(f"file:{uri_path}?mode=ro", uri=True, timeout=2.0)
     except sqlite3.Error:
         return None
 
@@ -73,7 +89,7 @@ def _table_exists(con: sqlite3.Connection, name: str) -> bool:
 class CursorReader(Reader):
     agent_id = "cursor"
     display_name = "Cursor"
-    global_db = "~/Library/Application Support/Cursor/User/globalStorage/state.vscdb"
+    global_db = _vscode_user_dir("Cursor") + "/globalStorage/state.vscdb"
 
     def available(self) -> bool:
         return os.path.exists(os.path.expanduser(self.global_db))
@@ -164,7 +180,7 @@ class CursorReader(Reader):
 class AntigravityReader(Reader):
     agent_id = "antigravity"
     display_name = "Antigravity"
-    base = "~/Library/Application Support/Antigravity/User"
+    base = _vscode_user_dir("Antigravity")
 
     def available(self) -> bool:
         return os.path.isdir(os.path.expanduser(self.base))
