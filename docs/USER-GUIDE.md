@@ -110,8 +110,9 @@ directory gains:
 Documents/Myco/chat-archive/
 ├── index.json           # manifest
 ├── <session>.md/.json   # neutral format any tool can read
-└── viewer.html          # single-file offline timeline —
-                         # double-click to browse & search (light theme)
+└── viewer.html          # single-file offline timeline — double-click to
+                         # browse & search (follows OS dark/light, with a
+                         # manual toggle that remembers your choice)
 ```
 
 > The archive contains your private conversations. It is git-ignored by

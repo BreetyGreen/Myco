@@ -34,7 +34,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is the single loud element. Both themes restyled; agent brand colors kept
   as the small colorful accents.
 
+- **`viewer.html` is now dual-theme** — the offline chat timeline follows the
+  OS dark/light preference and adds a 🌓 toggle that remembers the choice
+  (localStorage). All hard-coded colors moved to CSS tokens.
+
 ### Fixed
+- **`viewer.html` broke on conversations that contain `"</script>"`** (e.g.
+  any chat about HTML). The inlined JSON payload now escapes `</` as `<\/`,
+  so the script block can no longer be terminated early by message text.
 - `chatsync` SQLite readers now build `%`-quoted forward-slash URIs, so
   read-only opens work with Windows paths (backslashes and spaces used to
   corrupt the `file:` URI), and their default Cursor / Antigravity locations

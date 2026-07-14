@@ -5,7 +5,8 @@ merges chat history from all agents.
 
 The generated `viewer.html` inlines a compact JSON payload (one entry per
 session, with trimmed message text) and a small vanilla-JS app: no network,
-no build step, works by double-click. Light theme.
+no build step, works by double-click. Light & dark themes: follows the OS
+preference, with a manual toggle remembered in localStorage.
 """
 
 from __future__ import annotations
@@ -81,7 +82,9 @@ def build_html(
         truncated = len(payload) - max_sessions
         payload = payload[:max_sessions]
 
-    data_json = json.dumps(payload, ensure_ascii=False)
+    # 会话文本里可能出现 "</script>"（比如聊代码的会话），直接内联会提前终结
+    # <script> 块。把 "</" 转义成 "<\/" —— JSON 语义不变，HTML 里安全。
+    data_json = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
     colors_json = json.dumps(AGENT_COLORS, ensure_ascii=False)
     total_msgs = sum(len(e["msgs"]) for e in payload)
 
@@ -114,6 +117,31 @@ _TEMPLATE = r"""<!DOCTYPE html>
     --bg: #f7f8fa; --panel: #ffffff; --border: #e5e7eb; --text: #1f2328;
     --muted: #6b7280; --accent: #4f7cff; --hover: #f0f3f9;
     --user-bg: #eef4ff; --assistant-bg: #f7f8fa; --tool-bg: #f3f4f6;
+    --tool-fg: #475569; --active: #e8efff; --code-bg: #eef0f3;
+    --mark-bg: #ffe58a; --scroll: #d1d5db;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d; --panel: #1d2026; --border: #2a2e37; --text: #e6e8ee;
+      --muted: #8b91a0; --accent: #6b93ff; --hover: #242832;
+      --user-bg: #1f2a44; --assistant-bg: #1a1d24; --tool-bg: #20242c;
+      --tool-fg: #9aa3b5; --active: #2a3350; --code-bg: #262b35;
+      --mark-bg: #7a611a; --scroll: #3a404d;
+    }
+  }
+  html[data-theme="light"] {
+    --bg: #f7f8fa; --panel: #ffffff; --border: #e5e7eb; --text: #1f2328;
+    --muted: #6b7280; --accent: #4f7cff; --hover: #f0f3f9;
+    --user-bg: #eef4ff; --assistant-bg: #f7f8fa; --tool-bg: #f3f4f6;
+    --tool-fg: #475569; --active: #e8efff; --code-bg: #eef0f3;
+    --mark-bg: #ffe58a; --scroll: #d1d5db;
+  }
+  html[data-theme="dark"] {
+    --bg: #16181d; --panel: #1d2026; --border: #2a2e37; --text: #e6e8ee;
+    --muted: #8b91a0; --accent: #6b93ff; --hover: #242832;
+    --user-bg: #1f2a44; --assistant-bg: #1a1d24; --tool-bg: #20242c;
+    --tool-fg: #9aa3b5; --active: #2a3350; --code-bg: #262b35;
+    --mark-bg: #7a611a; --scroll: #3a404d;
   }
   * { box-sizing: border-box; }
   body {
@@ -139,8 +167,8 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
   .chip {
     font-size: 11px; padding: 3px 9px; border-radius: 999px; cursor: pointer;
-    border: 1px solid var(--border); background: #fff; user-select: none;
-    display: flex; align-items: center; gap: 5px;
+    border: 1px solid var(--border); background: var(--panel); user-select: none;
+    display: flex; align-items: center; gap: 5px; color: var(--text);
   }
   .chip.off { opacity: .38; }
   .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
@@ -149,7 +177,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
     padding: 11px 16px; border-bottom: 1px solid var(--border); cursor: pointer;
   }
   .item:hover { background: var(--hover); }
-  .item.active { background: #e8efff; }
+  .item.active { background: var(--active); }
   .item .t { font-size: 13px; font-weight: 600; line-height: 1.35;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
     overflow: hidden; }
@@ -164,7 +192,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   }
   .detail-head h2 { margin: 0 0 6px; font-size: 18px; }
   .detail-head .meta { font-size: 12px; color: var(--muted); }
-  .detail-head code { background: #eef0f3; padding: 1px 5px; border-radius: 4px; }
+  .detail-head code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
   .msgs { padding: 20px 28px; max-width: 900px; }
   .msg { margin-bottom: 16px; }
   .msg .role { font-size: 11px; font-weight: 700; color: var(--muted);
@@ -177,20 +205,29 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .msg.assistant .bubble { background: var(--assistant-bg); }
   .msg.tool .bubble, .msg.system .bubble { background: var(--tool-bg);
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px;
-    color: #475569; }
+    color: var(--tool-fg); }
   .empty { display: flex; align-items: center; justify-content: center;
     height: 100%; color: var(--muted); font-size: 14px; }
-  mark { background: #ffe58a; padding: 0 1px; border-radius: 2px; }
+  mark { background: var(--mark-bg); color: var(--text); padding: 0 1px; border-radius: 2px; }
+  .theme-btn {
+    border: 1px solid var(--border); background: var(--panel); color: var(--muted);
+    border-radius: 999px; font-size: 12px; padding: 3px 10px; cursor: pointer;
+  }
+  .theme-btn:hover { color: var(--text); }
+  .head-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .list::-webkit-scrollbar, .detail::-webkit-scrollbar { width: 9px; }
   .list::-webkit-scrollbar-thumb, .detail::-webkit-scrollbar-thumb {
-    background: #d1d5db; border-radius: 5px; }
+    background: var(--scroll); border-radius: 5px; }
 </style>
 </head>
 <body>
 <div class="app">
   <div class="sidebar">
     <div class="head">
-      <h1>💬 跨产品对话时间线</h1>
+      <div class="head-row">
+        <h1>💬 跨产品对话时间线</h1>
+        <button id="themeBtn" class="theme-btn" title="切换深浅主题">🌓</button>
+      </div>
       <div class="stats">__SESSION_COUNT__ 个会话 · __MSG_COUNT__ 条消息 · 只读归档__TRUNC_NOTE__</div>
     </div>
     <div class="controls">
@@ -204,6 +241,19 @@ _TEMPLATE = r"""<!DOCTYPE html>
   </div>
 </div>
 <script>
+// 主题：默认跟随系统；手动切换后记住选择（file:// 下 localStorage 不可用时静默降级）
+try {
+  const saved = localStorage.getItem('myco-viewer-theme');
+  if (saved === 'dark' || saved === 'light') document.documentElement.dataset.theme = saved;
+} catch (e) {}
+document.getElementById('themeBtn').onclick = () => {
+  const cur = document.documentElement.dataset.theme ||
+    (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem('myco-viewer-theme', next); } catch (e) {}
+};
+
 const DATA = __DATA__;
 const COLORS = __COLORS__;
 let activeAgents = new Set(Object.keys(COLORS));
@@ -249,7 +299,7 @@ function renderFilters(){
 function renderList(){
   const list=document.getElementById('list'); list.innerHTML="";
   const filtered = DATA.map((s,i)=>({s,i})).filter(o=>matches(o.s,query));
-  if(!filtered.length){ list.innerHTML='<div style="padding:20px;color:#888;font-size:13px">无匹配结果</div>'; return; }
+  if(!filtered.length){ list.innerHTML='<div style="padding:20px;color:var(--muted);font-size:13px">无匹配结果</div>'; return; }
   filtered.forEach(({s,i})=>{
     const el=document.createElement('div');
     el.className='item'+(i===activeIdx?' active':'');
