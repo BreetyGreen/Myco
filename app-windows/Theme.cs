@@ -19,36 +19,42 @@ public static class Theme
         var r = Application.Current.Resources;
 
         // 文本三级
-        r["Text"]  = B(dark ? "#E9EDE3" : "#16171D");
-        r["Text2"] = B(dark ? "#9BA394" : "#5F5E5A");
-        r["Text3"] = B(dark ? "#6A7164" : "#8A897F");
+        r["Text"]  = B(dark ? "#F0F3E9" : "#1C1E13");
+        r["Text2"] = B(dark ? "#A9B09D" : "#60644F");
+        r["Text3"] = B(dark ? "#767D6B" : "#90947F");
 
-        // 品牌绿阶梯
-        r["Brand"]     = B(dark ? "#8FCB4E" : "#4E7D18");
+        // 品牌绿：多巴胺荧光青柠（深色下做点缀高亮，浅色下压深保证对比度）
+        r["Brand"]     = B(dark ? "#C9F45D" : "#5A8A1D");
         r["Brand2"]    = B("#639922");
-        r["BrandLite"] = B(dark ? "#C0DD97" : "#7FB03A");
-        r["BrandGlow"] = B(dark ? "#7CB342" : "#639922", dark ? 0.45 : 0.34);
-        r["BrandTint"] = B(dark ? "#7CB342" : "#639922", dark ? 0.14 : 0.10);
+        r["BrandLite"] = B(dark ? "#E3FA9F" : "#A6D95B");
+        r["BrandGlow"] = B(dark ? "#C9F45D" : "#639922", dark ? 0.35 : 0.30);
+        r["BrandTint"] = B(dark ? "#C9F45D" : "#639922", dark ? 0.13 : 0.10);
         r["Warn"]      = B(dark ? "#F0A93B" : "#D98324");
 
-        // 卡片 / 分隔
-        r["Card"]     = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.045 : 0.032);
-        r["Card2"]    = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.028 : 0.02);
-        r["Line"]     = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.09 : 0.10);
-        r["LineSoft"] = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.055 : 0.06);
+        // 卡片改实色（多巴胺风：卡片有分量，背景干净）
+        r["Card"]     = dark ? B("#1C1F16") : B("#FFFFFF");
+        r["Card2"]    = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.035 : 0.03);
+        r["Line"]     = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.07 : 0.09);
+        r["LineSoft"] = B(dark ? "#FFFFFF" : "#16171D", dark ? 0.045 : 0.055);
 
-        // 壁纸渐变 + 面板玻璃（Windows 不做毛玻璃，用等价纯色渐变叠加）
+        // 背景：近黑炭（微绿暖）/ 奶油灰，弱化渐变，让荧光主卡成为唯一亮点
         r["WallGrad"] = Grad(45,
-            dark ? "#0B1408" : "#E6EEDD",
-            dark ? "#0C0D11" : "#EFF2EA",
-            dark ? "#111721" : "#E3EAF2");
+            dark ? "#14170C" : "#F2F1E9",
+            dark ? "#101207" : "#EEEFE6",
+            dark ? "#121313" : "#E9ECE0");
         r["PanelGrad"] = Grad(90,
-            dark ? "#DB1C1E26" : "#EBFFFFFF",   // panelTop（带透明度的 ARGB）
-            dark ? "#E6121319" : "#EBF8FAF5");  // panelBot
+            dark ? "#CC181B0F" : "#99FFFFFF",   // 顶部（带透明度的 ARGB）
+            dark ? "#E60F1108" : "#CCFAFBF4");  // 底部
 
-        // 主按钮（brandLite → brand2 渐变；前景深色下用墨黑）
-        r["BrandGrad"] = Grad(90, dark ? "#C0DD97" : "#7FB03A", "#639922");
-        r["PrimaryFg"] = B(dark ? "#0B1408" : "#FFFFFF");
+        // 荧光青柠渐变：主按钮 / 首页 hero 卡 / 激活 tab 药丸共用（signature）
+        r["BrandGrad"] = Grad(45,
+            dark ? "#DCF87E" : "#D8F471",
+            dark ? "#A6E14F" : "#9BD644",
+            dark ? "#64AC28" : "#6FB52D");
+        // 压在荧光绿上的墨字（两个主题一致：亮绿配深墨，对齐参考稿）
+        r["Ink"]       = B("#1A2408");
+        r["InkSoft"]   = B("#1A2408", 0.62);
+        r["PrimaryFg"] = B("#1A2408");
 
         Changed?.Invoke();
     }

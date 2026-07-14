@@ -17,7 +17,7 @@
         <ItemsControl x:Name="InstalledList" Margin="0,0,0,12">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border CornerRadius="11" Background="{DynamicResource Card2}" Margin="0,0,0,7"
+                    <Border CornerRadius="14" Background="{DynamicResource Card2}" Margin="0,0,0,7"
                             Padding="11,9">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -47,7 +47,7 @@
         <Button x:Name="SyncBtn" Style="{StaticResource PrimaryBtn}" Click="OnSync"
                 Content="聚合并生成时间线" Margin="0,0,0,12"/>
 
-        <Border x:Name="ResultCard" CornerRadius="11" Background="{DynamicResource Card2}"
+        <Border x:Name="ResultCard" CornerRadius="14" Background="{DynamicResource Card2}"
                 Padding="11" Visibility="Collapsed">
             <Grid>
                 <Grid.ColumnDefinitions>

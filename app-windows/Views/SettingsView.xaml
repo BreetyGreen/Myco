@@ -10,7 +10,7 @@
         </StackPanel>
 
         <!-- 外观主题 -->
-        <Border CornerRadius="12" Background="{DynamicResource Card}" Padding="13" Margin="0,0,0,12"
+        <Border CornerRadius="14" Background="{DynamicResource Card}" Padding="13" Margin="0,0,0,12"
                 BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -34,7 +34,7 @@
         </Border>
 
         <!-- 路径 -->
-        <Border CornerRadius="12" Background="{DynamicResource Card}" Padding="13" Margin="0,0,0,12"
+        <Border CornerRadius="14" Background="{DynamicResource Card}" Padding="13" Margin="0,0,0,12"
                 BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
             <StackPanel>
                 <TextBlock Text="脚本资源（只读）" FontSize="13" FontWeight="SemiBold"

@@ -19,18 +19,9 @@ public partial class HomeView : UserControl
     {
         var s = AppStore.I;
 
-        Summary.Inlines.Clear();
-        Brush T(string key) => (Brush)Application.Current.Resources[key];
-        Summary.Inlines.Add(new Run("检测到 ") { Foreground = T("Text2") });
-        Summary.Inlines.Add(new Run($"{s.InstalledCount} 个 agent")
-            { Foreground = T("Text"), FontWeight = System.Windows.FontWeights.SemiBold });
-        Summary.Inlines.Add(new Run("，约 ") { Foreground = T("Text2") });
-        Summary.Inlines.Add(new Run($"{s.TotalSessions} 段会话")
-            { Foreground = T("Text"), FontWeight = System.Windows.FontWeights.SemiBold });
-        Summary.Inlines.Add(new Run(" 可归档与接力。") { Foreground = T("Text2") });
-
         StatAgents.Text = s.InstalledCount.ToString();
         StatSessions.Text = s.TotalSessions.ToString();
+        HeroSub.Text = $"跨 {s.InstalledCount} 个 agent · 可归档与接力";
         StatSkills.Text = s.Skills.Count.ToString();
 
         AgentsList.ItemsSource = null;

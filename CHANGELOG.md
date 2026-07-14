@@ -25,6 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Windows). Readers that don't understand the key (Swift) ignore it, so the
   macOS app is untouched.
 
+### Changed
+- **Windows app: "dopamine" visual refresh.** New token set built around a
+  neon-lime gradient (#DCF87E→#A6E14F→#64AC28) with dark ink text on every
+  bright surface: a hero session-count card on 总览, pill-shaped primary
+  buttons, a lime pill for the active tab, solid elevated cards with larger
+  (14–20px) radii, and a flatter near-black / cream background so the lime
+  is the single loud element. Both themes restyled; agent brand colors kept
+  as the small colorful accents.
+
 ### Fixed
 - `chatsync` SQLite readers now build `%`-quoted forward-slash URIs, so
   read-only opens work with Windows paths (backslashes and spaces used to

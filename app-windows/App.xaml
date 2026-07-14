@@ -29,7 +29,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="bd" CornerRadius="13" Padding="0,13"
+                        <Border x:Name="bd" CornerRadius="24" Padding="0,13"
                                 Background="{DynamicResource BrandGrad}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -55,7 +55,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="bd" CornerRadius="12" Padding="12,7"
+                        <Border x:Name="bd" CornerRadius="15" Padding="13,8"
                                 Background="{DynamicResource Card2}"
                                 BorderBrush="{DynamicResource Line}" BorderThickness="0.6">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>

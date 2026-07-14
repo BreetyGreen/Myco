@@ -10,36 +10,41 @@
                        Foreground="{DynamicResource Brand}"/>
         </StackPanel>
 
-        <TextBlock x:Name="Summary" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,14"
-                   Foreground="{DynamicResource Text2}"/>
-
-        <!-- 统计三卡 -->
-        <UniformGrid Rows="1" Columns="3" Margin="0,0,0,16">
-            <Border CornerRadius="12" Background="{DynamicResource Card}" Padding="11" Margin="0,0,9,0"
-                    BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
-                <StackPanel>
-                    <TextBlock x:Name="StatAgents" FontSize="24" FontWeight="Bold"
-                               Foreground="{DynamicResource Brand}"/>
-                    <TextBlock Text="已装 agent" FontSize="10.5" Foreground="{DynamicResource Text3}"/>
+<!-- hero：荧光青柠主卡（signature）+ 右侧两张小卡，对齐参考稿的资产卡布局 -->
+        <Grid Margin="0,2,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.4*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" CornerRadius="18" Background="{DynamicResource BrandGrad}"
+                    Padding="16,14" Margin="0,0,9,0">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="会话总数" FontSize="11.5" FontWeight="SemiBold"
+                               Foreground="{DynamicResource InkSoft}"/>
+                    <TextBlock x:Name="StatSessions" FontSize="38" FontWeight="ExtraBold"
+                               Foreground="{DynamicResource Ink}" Margin="0,0,0,2"/>
+                    <TextBlock x:Name="HeroSub" FontSize="10.5" FontWeight="Medium"
+                               Foreground="{DynamicResource InkSoft}"/>
                 </StackPanel>
             </Border>
-            <Border CornerRadius="12" Background="{DynamicResource Card}" Padding="11" Margin="0,0,9,0"
-                    BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
-                <StackPanel>
-                    <TextBlock x:Name="StatSessions" FontSize="24" FontWeight="Bold"
-                               Foreground="{DynamicResource Text}"/>
-                    <TextBlock Text="会话总数" FontSize="10.5" Foreground="{DynamicResource Text3}"/>
-                </StackPanel>
-            </Border>
-            <Border CornerRadius="12" Background="{DynamicResource Card}" Padding="11"
-                    BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
-                <StackPanel>
-                    <TextBlock x:Name="StatSkills" FontSize="24" FontWeight="Bold"
-                               Foreground="{DynamicResource Text}"/>
-                    <TextBlock Text="可分发 skill" FontSize="10.5" Foreground="{DynamicResource Text3}"/>
-                </StackPanel>
-            </Border>
-        </UniformGrid>
+            <StackPanel Grid.Column="1">
+                <Border CornerRadius="16" Background="{DynamicResource Card}" Padding="12,10"
+                        Margin="0,0,0,9">
+                    <StackPanel>
+                        <TextBlock x:Name="StatAgents" FontSize="22" FontWeight="ExtraBold"
+                                   Foreground="{DynamicResource Brand}"/>
+                        <TextBlock Text="已装 agent" FontSize="10.5" Foreground="{DynamicResource Text3}"/>
+                    </StackPanel>
+                </Border>
+                <Border CornerRadius="16" Background="{DynamicResource Card}" Padding="12,10">
+                    <StackPanel>
+                        <TextBlock x:Name="StatSkills" FontSize="22" FontWeight="ExtraBold"
+                                   Foreground="{DynamicResource Text}"/>
+                        <TextBlock Text="可分发 skill" FontSize="10.5" Foreground="{DynamicResource Text3}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
 
         <!-- agent 列表 -->
         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
@@ -50,7 +55,7 @@
         <ItemsControl x:Name="AgentsList" Margin="0,0,0,10">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border CornerRadius="12" Background="{DynamicResource Card2}" Margin="0,0,0,7"
+                    <Border CornerRadius="14" Background="{DynamicResource Card2}" Margin="0,0,0,7"
                             BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6"
                             Padding="11,10">
                         <Grid>
@@ -86,7 +91,7 @@
         <!-- 两个 CTA -->
         <UniformGrid Rows="1" Columns="2" Margin="0,0,0,16">
             <Button Style="{StaticResource FlatBtn}" Click="OnGoShare" Margin="0,0,9,0">
-                <Border CornerRadius="13" Background="{DynamicResource Card}" Padding="13"
+                <Border CornerRadius="16" Background="{DynamicResource Card}" Padding="13"
                         BorderBrush="{DynamicResource Line}" BorderThickness="0.6">
                     <StackPanel>
                         <Border Width="26" Height="26" CornerRadius="8" HorizontalAlignment="Left"
@@ -103,7 +108,7 @@
                 </Border>
             </Button>
             <Button Style="{StaticResource FlatBtn}" Click="OnGoRelay">
-                <Border CornerRadius="13" Background="{DynamicResource Card}" Padding="13"
+                <Border CornerRadius="16" Background="{DynamicResource Card}" Padding="13"
                         BorderBrush="{DynamicResource Line}" BorderThickness="0.6">
                     <StackPanel>
                         <Border Width="26" Height="26" CornerRadius="8" HorizontalAlignment="Left"
@@ -122,7 +127,7 @@
         </UniformGrid>
 
         <!-- 隐私承诺 -->
-        <Border CornerRadius="11" Background="{DynamicResource Card2}" Padding="11">
+        <Border CornerRadius="14" Background="{DynamicResource Card2}" Padding="11">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>

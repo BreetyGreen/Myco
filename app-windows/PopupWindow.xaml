@@ -7,15 +7,15 @@
         ShowActivated="True" FontFamily="Segoe UI">
 
     <!-- 外层留 12px 给投影；内层是真正的 396x640 面板 -->
-    <Border Margin="12" CornerRadius="18"
+    <Border Margin="12" CornerRadius="20"
             BorderBrush="{DynamicResource Line}" BorderThickness="1">
         <Border.Effect>
             <DropShadowEffect BlurRadius="24" ShadowDepth="6" Opacity="0.45"/>
         </Border.Effect>
         <Grid>
             <!-- 壁纸渐变 + 面板玻璃两层背景（等价 macOS 的毛玻璃叠加） -->
-            <Border CornerRadius="18" Background="{DynamicResource WallGrad}"/>
-            <Border CornerRadius="18" Background="{DynamicResource PanelGrad}"/>
+            <Border CornerRadius="20" Background="{DynamicResource WallGrad}"/>
+            <Border CornerRadius="20" Background="{DynamicResource PanelGrad}"/>
 
             <Grid>
                 <Grid.RowDefinitions>
@@ -72,7 +72,7 @@
                 <!-- ======== 底部 Tab ======== -->
                 <Border Grid.Row="2" Background="{DynamicResource Card2}"
                         BorderBrush="{DynamicResource LineSoft}" BorderThickness="0,1,0,0"
-                        CornerRadius="0,0,18,18">
+                        CornerRadius="0,0,20,20">
                     <UniformGrid Rows="1" Margin="10,8,10,10">
                         <Button x:Name="TabHome" Style="{StaticResource FlatBtn}" Click="OnTab" Tag="home"/>
                         <Button x:Name="TabShare" Style="{StaticResource FlatBtn}" Click="OnTab" Tag="share"/>

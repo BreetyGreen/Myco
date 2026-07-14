@@ -18,7 +18,7 @@
                    Text="选一个源 skill，扇出到各 agent 的仓库目录；git commit 后全团队每个工具都能读到。"/>
 
         <!-- 源 skill 卡 -->
-        <Border x:Name="SkillCard" CornerRadius="12" Background="{DynamicResource Card}" Padding="13"
+        <Border x:Name="SkillCard" CornerRadius="14" Background="{DynamicResource Card}" Padding="13"
                 BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6" Margin="0,0,0,12">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -56,7 +56,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Button Style="{StaticResource FlatBtn}" Click="OnToggleTarget" Margin="0,0,0,7">
-                        <Border CornerRadius="12" Padding="11,9"
+                        <Border CornerRadius="14" Padding="11,9"
                                 Background="{DynamicResource Card2}"
                                 BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6">
                             <Grid>
@@ -68,7 +68,7 @@
                                 <Border Grid.Column="0" Width="20" Height="20" CornerRadius="6"
                                         BorderBrush="{DynamicResource Brand}" BorderThickness="1.4"
                                         VerticalAlignment="Center">
-                                    <Border CornerRadius="4.5" Background="{DynamicResource Brand}"
+                                    <Border CornerRadius="4.5" Background="{DynamicResource BrandGrad}"
                                             Visibility="{Binding Checked, Converter={StaticResource B2V}}">
                                         <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                                                    FontWeight="Bold" Foreground="{DynamicResource PrimaryFg}"
@@ -110,7 +110,7 @@
                 Content="预演分发" Margin="0,0,0,12"/>
 
         <!-- 结果 -->
-        <Border x:Name="ResultCard" CornerRadius="11" Background="{DynamicResource Card2}"
+        <Border x:Name="ResultCard" CornerRadius="14" Background="{DynamicResource Card2}"
                 Padding="11" Visibility="Collapsed">
             <Grid>
                 <Grid.ColumnDefinitions>

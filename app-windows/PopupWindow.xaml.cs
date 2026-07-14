@@ -99,25 +99,26 @@ public partial class PopupWindow : Window
     {
         var (_, glyph, label) = _tabs.TryGetValue(key, out var t) ? t : (null!, "", key);
         var stack = new StackPanel { Margin = new Thickness(0, 4, 0, 4) };
-        var bar = new Border
-        {
-            Width = 16, Height = 2, CornerRadius = new CornerRadius(1),
-            HorizontalAlignment = HorizontalAlignment.Center,
-            Background = Brushes.Transparent, Tag = "bar",
-        };
         var icon = new TextBlock
         {
             Text = glyph, FontFamily = new FontFamily("Segoe MDL2 Assets"),
-            FontSize = 16, HorizontalAlignment = HorizontalAlignment.Center,
-            Margin = new Thickness(0, 3, 0, 3), Tag = "icon",
+            FontSize = 15, HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center, Tag = "icon",
+        };
+        // 激活态 = 荧光青柠药丸包住图标（多巴胺 signature 的延伸）
+        var pill = new Border
+        {
+            Width = 40, Height = 24, CornerRadius = new CornerRadius(12),
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Background = Brushes.Transparent, Tag = "pill", Child = icon,
         };
         var text = new TextBlock
         {
             Text = label, FontSize = 9.5, FontWeight = FontWeights.SemiBold,
-            HorizontalAlignment = HorizontalAlignment.Center, Tag = "label",
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(0, 3, 0, 0), Tag = "label",
         };
-        stack.Children.Add(bar);
-        stack.Children.Add(icon);
+        stack.Children.Add(pill);
         stack.Children.Add(text);
         return stack;
     }
@@ -132,12 +133,14 @@ public partial class PopupWindow : Window
             {
                 switch (child)
                 {
-                    case Border bar:
-                        if (on) bar.SetResourceReference(Border.BackgroundProperty, "Brand");
-                        else bar.Background = Brushes.Transparent;
+                    case Border pill:
+                        if (on) pill.SetResourceReference(Border.BackgroundProperty, "BrandGrad");
+                        else pill.Background = Brushes.Transparent;
+                        if (pill.Child is TextBlock icon)
+                            icon.SetResourceReference(TextBlock.ForegroundProperty, on ? "Ink" : "Text3");
                         break;
-                    case TextBlock tb:
-                        tb.SetResourceReference(TextBlock.ForegroundProperty, on ? "Brand" : "Text3");
+                    case TextBlock label:
+                        label.SetResourceReference(TextBlock.ForegroundProperty, on ? "Brand" : "Text3");
                         break;
                 }
             }
