@@ -60,6 +60,8 @@
 
 > **系统要求：** Windows 10/11。zip 完全自包含 —— .NET 运行时和内嵌 Python 都已打包，不需要装任何其它东西。
 
+📖 图文版**使用指南**（安装、五大页面逐页介绍、FAQ）：[docs/USER-GUIDE.zh-CN.md](docs/USER-GUIDE.zh-CN.md)
+
 ---
 
 ## App 里有什么

@@ -75,6 +75,9 @@ Click it and everything is one panel away.
 > **Requirements:** Windows 10/11. The zip is fully self-contained — .NET
 > runtime and an embedded Python are bundled; nothing else to install.
 
+📖 Illustrated **user guide** (install, every tab explained, FAQ — Chinese):
+[docs/USER-GUIDE.zh-CN.md](docs/USER-GUIDE.zh-CN.md)
+
 ---
 
 ## What's inside the app
