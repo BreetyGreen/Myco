@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Windows app (`app-windows/`)** — a native WPF tray app with full feature
+  parity to the macOS menu-bar app: tray icon + dark/light themed popup panel
+  with 总览 / 共享 / 接力 / 历史 / 设置, driven by the same Python engine and
+  `agents.json`. Zero NuGet dependencies (WinForms `NotifyIcon` + WPF, both
+  in-box); builds with the .NET 8 SDK only. `build.ps1` produces a fully
+  self-contained green zip (`Myco.exe` + engine + skills + embedded
+  python.org Python) — unzip and double-click, nothing to install.
+- **`engine/agent_status.py`** — agent detection (installs + session counts)
+  as a single engine implementation driven by `agents.json`, with `--json`
+  for app frontends and a human-readable table for the CLI. The Windows app
+  renders this instead of reimplementing detection in C# (Windows has no
+  `sqlite3` CLI; the engine's stdlib `sqlite3` opens databases read-only).
+- **Per-platform paths in `agents.json`** — an agent may carry an optional
+  `"windows"` override block (Cursor / Antigravity live under `%APPDATA%` on
+  Windows). Readers that don't understand the key (Swift) ignore it, so the
+  macOS app is untouched.
+
+### Fixed
+- `chatsync` SQLite readers now build `%`-quoted forward-slash URIs, so
+  read-only opens work with Windows paths (backslashes and spaces used to
+  corrupt the `file:` URI), and their default Cursor / Antigravity locations
+  are chosen per platform.
+
 ## [0.3.2] — 2026-07-14
 
 Docs-only release: brings every document in line with what the app actually

@@ -26,21 +26,29 @@ into any agent's storage):
 
 | Layer | Where | What |
 |-------|-------|------|
-| **App** (the product) | `app/Sources/Myco/` | SwiftUI + AppKit menu-bar app (`NSStatusItem` + `NSPopover`). Builds with **Command Line Tools only — no Xcode**. |
-| **Engine** (the brains) | `engine/` | Pure **Python-stdlib** CLIs the app calls via `Process`. No third-party deps. |
+| **App — macOS** | `app/Sources/Myco/` | SwiftUI + AppKit menu-bar app (`NSStatusItem` + `NSPopover`). Builds with **Command Line Tools only — no Xcode**. |
+| **App — Windows** | `app-windows/` | WPF tray app (WinForms `NotifyIcon` + WPF panel, **zero NuGet deps**). Builds with the **.NET 8 SDK** (`dotnet build`). |
+| **Engine** (the brains) | `engine/` | Pure **Python-stdlib** CLIs both apps call via `Process`. No third-party deps. |
 
-The Swift app is a thin shell; all real work (detection, distribution, chat
-parsing, handoff) lives in the Python engine. In an installed `.app` the engine
-is bundled into `Contents/Resources/engine/`, so the product is fully
-self-contained and uses macOS's own `python3`.
+The native apps are thin shells; all real work (detection, distribution, chat
+parsing, handoff) lives in the Python engine. The installed macOS `.app`
+bundles the engine into `Contents/Resources/engine/` and uses macOS's own
+`python3`; the Windows zip ships the engine next to `Myco.exe` plus an
+embedded python.org Python — both fully self-contained. On Windows, agent
+detection also runs in the engine (`agent_status.py --json`) rather than being
+reimplemented in C#.
 
 ### Single source of truth: `engine/agents.json`
 
 **This is the most important file to understand.** It's the one registry of
 every agent Myco knows about — id, display name, detection path, session-reading
-method (`jsonl` dirs or `sqlite` db+query), and skill directory. **Both** the
-Swift app (`AgentDetector.swift`) **and** the Python engine (`distribute.py`)
-read it, so detection and skill-distribution can never drift apart.
+method (`jsonl` dirs or `sqlite` db+query), and skill directory. The Swift app
+(`AgentDetector.swift`), the Windows app (via `agent_status.py`) **and** the
+Python engine (`distribute.py`) all read it, so detection and
+skill-distribution can never drift apart. An agent may carry an optional
+`"windows"` block that shallow-overrides its paths on Windows (Cursor /
+Antigravity live under `%APPDATA%` there); readers that don't understand the
+key (Swift) simply ignore it.
 
 **To add an agent or fix a moved path, edit `agents.json` only** — no recompile,
 no touching two code paths. Currently 5 detected agents:
@@ -52,6 +60,7 @@ no touching two code paths. Currently 5 detected agents:
 ```
 engine/agents.json        # ★ single source of truth (agents, paths, skill dirs)
 engine/distribute.py      # skill fan-out (Share)         — reads agents.json
+engine/agent_status.py    # agent detection as JSON       — reads agents.json
 engine/handoff_chat.py    # package one chat (Relay)      — has --list --json
 engine/sync_chats.py      # aggregate history (History) → archive + HTML
 engine/chatsync/          # canonical message model + per-agent readers + exporters
@@ -60,6 +69,8 @@ app/Sources/Myco/AgentDetector.swift  # reads agents.json, detects installs
 app/Sources/Myco/PythonBridge.swift   # Process bridge to the engine
 app/build.sh              # swift build -c release → assembles Myco.app
 app/package_dmg.sh        # produce the distributable .dmg
+app-windows/PythonBridge.cs  # Windows Process bridge (same lookup order)
+app-windows/build.ps1     # dotnet publish → self-contained Myco-win zip
 skills/.../SKILL.md        # the portable skill Myco ships & distributes
 docs/                     # INSTALL (per-tool paths) + design notes
 CHANGELOG.md              # ★ read this to see where the project is right now
@@ -73,9 +84,26 @@ cd app && ./build.sh && open Myco.app
 
 # Exercise the engine directly (no app needed)
 python3 engine/distribute.py --dry-run          # what skill fan-out would write
+python3 engine/agent_status.py                  # detected agents + session counts
 python3 engine/handoff_chat.py --list --json    # real sessions as JSON
 python3 engine/validate_skills.py               # CI's skill-frontmatter check
 ```
+
+## Build & verify (Windows)
+
+```powershell
+# Build & run (needs the .NET 8 SDK; engine works with any Python 3)
+dotnet build app-windows\Myco.csproj -c Release
+$env:MYCO_REPO = (Get-Location); app-windows\bin\Release\net8.0-windows\Myco.exe
+
+# Package the self-contained distributable zip (downloads embeddable Python)
+app-windows\build.ps1
+```
+
+Preview hooks (both apps): `MYCO_PREVIEW=1` shows the panel as a normal
+window, `MYCO_TAB` picks the tab, `MYCO_SHOT=<png>` self-renders a screenshot
+(`MYCO_SHOT_QUIT`, `MYCO_SHOT_DELAY`, `MYCO_THEME=light` also supported on
+Windows).
 
 CI (`.github/workflows/ci.yml`) validates every `SKILL.md` and dry-runs the
 distributor on every push/PR, plus a macOS `swift build` job.
@@ -96,6 +124,8 @@ private, so a fresh clone won't have them, and that's intentional:
 - `chat-archive/` and `handoff-*.md` — contain **real private conversations**.
 - `app/.build/`, `app/Myco.app/`, `app/*.dmg`, `app/*.icns` — build artifacts
   (regenerated by `build.sh` / `package_dmg.sh`).
+- `app-windows/bin/`, `app-windows/obj/`, `app-windows/dist/` — Windows build
+  artifacts (regenerated by `dotnet build` / `build.ps1`).
 
 The **code, docs, engine, skill payload, brand assets and `agents.json`** are
 all committed, so any capable AI agent can pick up development from a clean

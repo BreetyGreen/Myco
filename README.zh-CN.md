@@ -52,6 +52,14 @@
 
 > **系统要求：** macOS 13+。仅此而已 —— Myco 完全自包含，用的是 macOS 自带的 `python3`，不需要装任何其它东西。
 
+### Windows
+
+1. 从[最新 Release](https://github.com/BreetyGreen/Myco/releases/latest) 下载 **`Myco-win-x.y.z.zip`**。
+2. 解压到任意位置，双击 **`Myco.exe`** —— 无需安装。
+3. Myco 常驻系统托盘（任务栏右下角），点那个三层叠图标即可。
+
+> **系统要求：** Windows 10/11。zip 完全自包含 —— .NET 运行时和内嵌 Python 都已打包，不需要装任何其它东西。
+
 ---
 
 ## App 里有什么
@@ -127,10 +135,13 @@ Myco 随附并用于分发的那份可移植技能在
 multi-agent-skill-sharing/          (即 Myco 项目)
 ├── README.md
 ├── LICENSE
-├── app/                      # Myco —— SwiftUI 菜单栏 App（就是产品本体）
+├── app/                      # Myco —— SwiftUI 菜单栏 App（macOS）
 │   ├── Sources/Myco/         #   原生 UI + PythonBridge
 │   ├── build.sh              #   组装自包含的 Myco.app
 │   └── package_dmg.sh        #   产出可安装的 .dmg
+├── app-windows/              # Myco —— WPF 托盘 App（Windows）
+│   ├── *.cs / Views/         #   原生 UI + PythonBridge（零 NuGet 依赖）
+│   └── build.ps1             #   组装自包含的 Myco-win zip
 ├── engine/                   # Myco 的内部 Python 引擎（纯标准库）
 │   ├── distribute.py         #   技能扇出
 │   ├── sync_chats.py         #   历史聚合 → 归档 + HTML

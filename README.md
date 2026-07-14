@@ -65,6 +65,16 @@ Click it and everything is one panel away.
 > **Requirements:** macOS 13+. That's it — Myco is fully self-contained and uses
 > the `python3` that already ships with macOS. Nothing else to install.
 
+### Windows
+
+1. Download **`Myco-win-x.y.z.zip`** from the
+   [latest release](https://github.com/BreetyGreen/Myco/releases/latest).
+2. Unzip anywhere and double-click **`Myco.exe`** — no installer.
+3. Myco lives in the system tray (bottom-right). Click the stacked-tiles icon.
+
+> **Requirements:** Windows 10/11. The zip is fully self-contained — .NET
+> runtime and an embedded Python are bundled; nothing else to install.
+
 ---
 
 ## What's inside the app
@@ -156,10 +166,13 @@ its design notes are in [`docs/`](docs/).
 multi-agent-skill-sharing/          (the Myco project)
 ├── README.md
 ├── LICENSE
-├── app/                      # Myco — the SwiftUI menu-bar app (the product)
+├── app/                      # Myco — the SwiftUI menu-bar app (macOS)
 │   ├── Sources/Myco/         #   native UI + PythonBridge
 │   ├── build.sh              #   assemble self-contained Myco.app
 │   └── package_dmg.sh        #   produce the installable .dmg
+├── app-windows/              # Myco — the WPF tray app (Windows)
+│   ├── *.cs / Views/         #   native UI + PythonBridge (0 NuGet deps)
+│   └── build.ps1             #   assemble self-contained Myco-win zip
 ├── engine/                   # Myco's internal Python engine (pure stdlib)
 │   ├── distribute.py         #   skill fan-out
 │   ├── sync_chats.py         #   history aggregation → archive + HTML
