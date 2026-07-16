@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Handoff v2: full-transcript pointer.** Mechanical summaries have a low
+  ceiling — but the receiver is an LLM that can read files. When a package
+  gets trimmed (auto-degrade / summary mode), the engine now also exports
+  the untrimmed transcript as `<pack>-full.md` and the package header names
+  that path, telling the target agent to read the full history itself and
+  treat the inline excerpt as a table of contents. Short conversations still
+  ship verbatim with no extra file.
 - **Workspace-aware relay.** Sessions now carry their workspace: the relay
   list shows a project label, a search box filters by title / workspace /
   id (CLI `--search` matches projects too), and the handoff package header

@@ -69,6 +69,8 @@ class HandoffResult:
     turns_total: int
     degraded: bool
     note: str = ""
+    # 有省略时指向全文导出文件（调用方负责真正写出该文件）
+    full_transcript_path: str = ""
 
 
 # ---------------------------------------------------------------------------
@@ -148,7 +150,7 @@ def _label(role: str) -> str:
     return "【用户】" if role == ROLE_USER else "【助手】"
 
 
-def _header(sess: CanonicalSession, turns_total: int) -> str:
+def _header(sess: CanonicalSession, turns_total: int, full_path: str = "") -> str:
     agent = AGENT_DISPLAY.get(sess.source_agent, sess.source_agent)
     title = sess.title or sess.derive_title()
     when = (sess.created_at or sess.updated_at or "")[:19].replace("T", " ")
@@ -162,12 +164,21 @@ def _header(sess: CanonicalSession, turns_total: int) -> str:
     if when:
         lines.append(f"原会话时间       : {when}")
     lines.append(f"原会话轮次       : {turns_total} 轮 (user+assistant)")
+    if full_path:
+        lines.append(f"完整对话全文     : {full_path}")
     lines.append("")
     lines.append(
         "说明：以下是我此前在【" + agent + "】里的一段完整对话历史。"
         "请把它当作我们对话的前情背景读完，然后我们在这里【接着往下聊】——"
         "你无需重复已经完成的工作，直接基于这些上下文继续即可。"
     )
+    if full_path:
+        lines.append(
+            "全文提示：下方内容因长度做过省略，只保留提要与关键轮次。"
+            "完整逐轮全文已导出为本地文件 " + full_path + " ——"
+            "如果你具备读取本地文件的能力，请【直接读取该文件】获得未删节的"
+            "完整历史（按需通读或跳读），下方摘录仅作快速定位用。"
+        )
     if sess.project:
         lines.append(
             "工作空间提示：这段对话发生在本地项目 " + sess.project + " 中。"
@@ -286,34 +297,46 @@ def build_handoff(
     sess: CanonicalSession,
     mode: str = MODE_AUTO,
     max_chars: int = DEFAULT_MAX_CHARS,
+    full_transcript_path: str = "",
 ) -> HandoffResult:
-    """Produce a handoff package for `sess`. See module docstring for modes."""
+    """Produce a handoff package for `sess`. See module docstring for modes.
+
+    `full_transcript_path`: 计划中的全文导出位置（绝对路径）。只在包有省略
+    （summary / 降级 window）时才写进头部并回填到结果里——机械摘要的天花板
+    有限，真正的接收者是个 LLM，让它自己去读未删节全文比任何摘要都强。
+    包为 full（无省略）时忽略，调用方也无需写全文文件。
+    """
     if mode not in VALID_MODES:
         mode = MODE_AUTO
     turns = _clean_turns(sess)
     turns_total = len(turns)
-    header = _header(sess, turns_total)
     footer = _footer()
 
-    def _assemble(core: str) -> str:
+    def _assemble(core: str, with_pointer: bool) -> str:
+        header = _header(
+            sess, turns_total, full_transcript_path if with_pointer else ""
+        )
         return header + "\n\n" + core + "\n\n" + footer
 
     if mode == MODE_SUMMARY:
+        degraded = turns_total > 8
+        pointer = bool(full_transcript_path) and degraded
         core = _render_window(turns, max_chars, head=2, tail=6)
-        text = _assemble(core)
+        text = _assemble(core, pointer)
         return HandoffResult(
             text=text,
             mode_used="window",
             char_count=len(text),
             turns_included=min(turns_total, 8),
             turns_total=turns_total,
-            degraded=turns_total > 8,
+            degraded=degraded,
             note="summary 模式：始终精简为摘要 + 关键轮次。",
+            full_transcript_path=full_transcript_path if pointer else "",
         )
 
     # full or auto: first try verbatim
     full_core = _render_full(turns)
-    full_text = _assemble(full_core)
+    full_text = _assemble(full_core, with_pointer=False)
     if mode == MODE_FULL or len(full_text) <= max_chars:
         return HandoffResult(
             text=full_text,
@@ -328,14 +351,15 @@ def build_handoff(
         )
 
     # auto + over budget -> degrade to window
+    pointer = bool(full_transcript_path)
     core = _render_window(turns, max_chars)
-    text = _assemble(core)
+    text = _assemble(core, pointer)
     # if still over budget, tighten the tail progressively
     tail = 8
     while len(text) > max_chars and tail > 3:
         tail -= 1
         core = _render_window(turns, max_chars, head=3, tail=tail)
-        text = _assemble(core)
+        text = _assemble(core, pointer)
     return HandoffResult(
         text=text,
         mode_used="window",
@@ -345,7 +369,9 @@ def build_handoff(
         degraded=True,
         note=(
             f"auto 模式：全文约 {len(full_text)} 字符，超过预算 {max_chars}，"
-            "已自动降级为「前情提要 + 首尾关键轮次」以适配上下文长度。"
-            "完整正文仍保存在归档的 .md / .json 中。"
+            "已自动降级为「前情提要 + 首尾关键轮次」。"
+            + ("未删节全文另存为 -full.md，接收方可直接读取。" if pointer
+               else "完整正文仍保存在归档的 .md / .json 中。")
         ),
+        full_transcript_path=full_transcript_path if pointer else "",
     )

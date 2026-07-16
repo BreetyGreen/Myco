@@ -125,7 +125,8 @@ public partial class RelayView : UserControl
         if (r.Ok)
         {
             ResultTitle.Text = "接力包已生成";
-            ResultText.Text = $"已写入 {file}（并复制到剪贴板）。粘贴到目标产品的新会话即可继续。";
+            ResultText.Text = $"已写入 {file}（并复制到剪贴板）。粘贴到目标产品的新会话即可继续。" +
+                "长对话会同时导出未删节全文（同名 -full.md），包内已注明路径，目标 AI 可自行读取。";
         }
         else
         {

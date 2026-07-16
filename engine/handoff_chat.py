@@ -41,6 +41,7 @@ from typing import List, Optional
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from chatsync.canonical import CanonicalSession  # noqa: E402
+from chatsync.exporter import render_markdown  # noqa: E402
 from chatsync.handoff import (  # noqa: E402
     DEFAULT_MAX_CHARS,
     VALID_MODES,
@@ -216,11 +217,23 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 2
 
     sess = matches[0]
-    result = build_handoff(sess, mode=args.mode, max_chars=args.max_chars)
-
-    # Report.
     agent = sess.source_agent
     short = _short(sess)
+
+    # 全文导出位置（与接力包同目录、同名 + -full 后缀）。只在包有省略时
+    # 真正写出并在头部注明——接收方是 LLM，读未删节全文强过任何机械摘要。
+    out_path = os.path.abspath(args.out or f"./handoff-{agent}-{short}.md")
+    full_path = ""
+    if not args.no_file:
+        stem, ext = os.path.splitext(out_path)
+        full_path = stem + "-full" + (ext or ".md")
+
+    result = build_handoff(
+        sess, mode=args.mode, max_chars=args.max_chars,
+        full_transcript_path=full_path,
+    )
+
+    # Report.
     print("Conversation handoff built")
     print(f"  source     : {agent}  ({sess.title or sess.derive_title()})")
     print(f"  shortid    : {short}")
@@ -232,12 +245,14 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     # Write file (default on).
     if not args.no_file:
-        out_path = args.out or f"./handoff-{agent}-{short}.md"
-        out_path = os.path.abspath(out_path)
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
         with open(out_path, "w", encoding="utf-8") as fh:
             fh.write(result.text)
         print(f"  file       : {out_path}")
+        if result.full_transcript_path:
+            with open(result.full_transcript_path, "w", encoding="utf-8") as fh:
+                fh.write(render_markdown(sess))
+            print(f"  full text  : {result.full_transcript_path}")
 
     # Clipboard (default on).
     if not args.no_clip:

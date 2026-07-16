@@ -102,6 +102,13 @@ database — product B continues in its own, legitimately created session.
    directory (`handoff-<agent>-<id>.md`) **and copied to the clipboard**
 4. Open the target product, start a new chat, paste, continue
 
+> **Long conversations?** Oversized packages auto-trim to a recap plus key
+> turns, but the untrimmed transcript is exported alongside (`-full.md`) and
+> named in the package header — a file-capable target agent (Claude Code,
+> Codex, …) will read the full history itself and use the inline excerpt as
+> a table of contents. Workspace-scoped sessions also carry their project
+> path so the target agent reads the repo for code-layer context.
+
 ---
 
 ## History — a cross-agent chat archive
