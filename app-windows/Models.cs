@@ -20,7 +20,8 @@ public sealed record AgentVM(
 }
 
 /// 可接力的会话（数据来自 handoff_chat.py --list --json）。
-public sealed record SessionVM(string Id, string Agent, string Title, int Rounds, string Updated)
+public sealed record SessionVM(string Id, string Agent, string Title, int Rounds, string Updated,
+                               string Project = "")
 {
     public Brush Badge => Theme.AgentColor(Agent);
     public string Initial => Agent switch
@@ -33,7 +34,20 @@ public sealed record SessionVM(string Id, string Agent, string Title, int Rounds
         "claude" => "Claude Code", "workbuddy" => "WorkBuddy", "codex" => "Codex CLI",
         "cursor" => "Cursor", "antigravity" => "Antigravity", _ => Agent,
     };
-    public string Meta => $"{Id} · {Rounds} 轮 · {Updated}";
+    /// 工作空间短名（完整路径的最后一段）；无工作空间的会话为空。
+    public string ProjectLabel
+    {
+        get
+        {
+            var p = Project.TrimEnd('/', '\\');
+            if (p.Length == 0) return "";
+            var i = p.LastIndexOfAny(new[] { '/', '\\' });
+            return i >= 0 ? p[(i + 1)..] : p;
+        }
+    }
+    public string Meta => ProjectLabel.Length > 0
+        ? $"{ProjectLabel} · {Id} · {Rounds} 轮 · {Updated}"
+        : $"{Id} · {Rounds} 轮 · {Updated}";
 }
 
 /// 随附 skills/ 目录里可分发的 skill。

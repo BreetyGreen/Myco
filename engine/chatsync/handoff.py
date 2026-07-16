@@ -157,6 +157,8 @@ def _header(sess: CanonicalSession, turns_total: int) -> str:
         f"来源产品 (from) : {agent}",
         f"原会话标题       : {title}",
     ]
+    if sess.project:
+        lines.append(f"所属工作空间     : {sess.project}")
     if when:
         lines.append(f"原会话时间       : {when}")
     lines.append(f"原会话轮次       : {turns_total} 轮 (user+assistant)")
@@ -166,6 +168,12 @@ def _header(sess: CanonicalSession, turns_total: int) -> str:
         "请把它当作我们对话的前情背景读完，然后我们在这里【接着往下聊】——"
         "你无需重复已经完成的工作，直接基于这些上下文继续即可。"
     )
+    if sess.project:
+        lines.append(
+            "工作空间提示：这段对话发生在本地项目 " + sess.project + " 中。"
+            "本接力包只承载【对话层】上下文；如果你能访问该目录，请先读取其中的"
+            "代码、文档与 git 历史作为【代码层】上下文，两层互补后再继续。"
+        )
     lines.append("=" * 72)
     return "\n".join(lines)
 

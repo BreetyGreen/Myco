@@ -52,12 +52,16 @@ from ..canonical import (
 from .. import utils
 
 
-def _vscode_user_dir(app: str) -> str:
-    """Per-platform VSCode-style user dir for `app` (Cursor / Antigravity)."""
+def _vscode_user_dir(app: str, win_app: str = "") -> str:
+    """Per-platform VSCode-style user dir for `app` (Cursor / Antigravity).
+
+    `win_app` overrides the app-dir name on Windows when it differs
+    (e.g. Antigravity's user data lives under "Antigravity IDE" there).
+    """
     if sys.platform == "darwin":
         return f"~/Library/Application Support/{app}/User"
     if sys.platform.startswith("win"):
-        return f"~/AppData/Roaming/{app}/User"
+        return f"~/AppData/Roaming/{win_app or app}/User"
     return f"~/.config/{app}/User"
 
 
@@ -180,7 +184,7 @@ class CursorReader(Reader):
 class AntigravityReader(Reader):
     agent_id = "antigravity"
     display_name = "Antigravity"
-    base = _vscode_user_dir("Antigravity")
+    base = _vscode_user_dir("Antigravity", win_app="Antigravity IDE")
 
     def available(self) -> bool:
         return os.path.isdir(os.path.expanduser(self.base))

@@ -21,6 +21,28 @@
                 <TextBlock Text="选择要接力的会话" FontSize="10.5" FontWeight="SemiBold" Margin="7,0,0,0"
                            Foreground="{DynamicResource Brand}"/>
             </StackPanel>
+            <!-- 搜索：标题 / 工作空间 / 短 ID -->
+            <Border CornerRadius="12" Background="{DynamicResource Card2}" Padding="10,7"
+                    BorderBrush="{DynamicResource LineSoft}" BorderThickness="0.6" Margin="0,0,0,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="&#xE721;" FontFamily="Segoe MDL2 Assets"
+                               FontSize="12" Foreground="{DynamicResource Text3}"
+                               VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <Grid Grid.Column="1">
+                        <TextBlock x:Name="SearchHint" Text="搜索标题 / 工作空间 / ID…" FontSize="12"
+                                   Foreground="{DynamicResource Text3}" VerticalAlignment="Center"
+                                   IsHitTestVisible="False"/>
+                        <TextBox x:Name="SearchBox" Background="Transparent" BorderThickness="0"
+                                 FontSize="12" Foreground="{DynamicResource Text}"
+                                 CaretBrush="{DynamicResource Brand}" VerticalAlignment="Center"
+                                 TextChanged="OnSearchChanged"/>
+                    </Grid>
+                </Grid>
+            </Border>
             <ItemsControl x:Name="SessionsList">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>

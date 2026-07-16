@@ -195,7 +195,8 @@ public sealed class PythonBridge
                     id, agent,
                     s.TryGetProperty("title", out var t) ? (t.GetString() ?? "(无标题)") : "(无标题)",
                     s.TryGetProperty("msgs", out var m) && m.TryGetInt32(out var mi) ? mi : 0,
-                    s.TryGetProperty("date", out var d) ? (d.GetString() is { Length: > 0 } ds ? ds : "—") : "—"));
+                    s.TryGetProperty("date", out var d) ? (d.GetString() is { Length: > 0 } ds ? ds : "—") : "—",
+                    s.TryGetProperty("project", out var pj) ? (pj.GetString() ?? "") : ""));
             }
         }
         catch (JsonException) { }

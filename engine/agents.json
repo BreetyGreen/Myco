@@ -67,12 +67,14 @@
       },
       "skillDir": ".antigravity/skills",
       "skillSupport": "convention",
+      "_windowsNote": "Windows 上用户数据在 'Antigravity IDE'（带空格）；无空格的 Antigravity 只是安装向导壳。agent 对话存云端，本地 chat.ChatSessionStore.index 为空是常态，因此用真实的索引条目数计数（诚实的 0），而不是 LIKE 撞键名。",
       "windows": {
-        "root": "~/AppData/Roaming/Antigravity",
+        "root": "~/AppData/Roaming/Antigravity IDE",
+        "detail": "Antigravity IDE state.vscdb",
         "sessions": {
           "kind": "sqlite",
-          "db": "~/AppData/Roaming/Antigravity/User/globalStorage/state.vscdb",
-          "query": "SELECT COUNT(*) FROM ItemTable WHERE key LIKE '%chat%' OR key LIKE '%composer%';"
+          "db": "~/AppData/Roaming/Antigravity IDE/User/globalStorage/state.vscdb",
+          "query": "SELECT COALESCE(json_array_length(value, '$.entries'), 0) FROM ItemTable WHERE key = 'chat.ChatSessionStore.index';"
         }
       }
     }

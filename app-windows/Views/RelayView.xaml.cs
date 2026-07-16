@@ -25,17 +25,32 @@ public partial class RelayView : UserControl
     private void Rebuild()
     {
         var s = AppStore.I;
+        var q = (SearchBox.Text ?? "").Trim();
+        var shown = q.Length == 0
+            ? s.Sessions
+            : s.Sessions.Where(x =>
+                x.Title.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                x.Project.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                x.Id.Contains(q, StringComparison.OrdinalIgnoreCase)).ToList();
         SessionsList.ItemsSource = null;
-        SessionsList.ItemsSource = s.Sessions;
-        if (s.Sessions.Count == 0)
+        SessionsList.ItemsSource = shown;
+        if (shown.Count == 0)
         {
             EmptyHint.Visibility = Visibility.Visible;
-            EmptyHint.Text = s.SessionsLoading ? "正在读取真实会话…" : "未检测到会话";
+            EmptyHint.Text = s.SessionsLoading && s.Sessions.Count == 0
+                ? "正在读取真实会话…"
+                : (q.Length > 0 ? "没有匹配的会话" : "未检测到会话");
         }
         else
         {
             EmptyHint.Visibility = Visibility.Collapsed;
         }
+    }
+
+    private void OnSearchChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        SearchHint.Visibility = SearchBox.Text.Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+        Rebuild();
     }
 
     private void BuildModeRow()
@@ -76,7 +91,9 @@ public partial class RelayView : UserControl
         PickedBadge.Background = s.Badge;
         PickedInitial.Text = s.Initial;
         PickedTitle.Text = s.Title;
-        PickedMeta.Text = $"{s.AgentDisplay} · {s.Id} · {s.Rounds} 轮";
+        PickedMeta.Text = s.ProjectLabel.Length > 0
+            ? $"{s.AgentDisplay} · {s.ProjectLabel} · {s.Id} · {s.Rounds} 轮"
+            : $"{s.AgentDisplay} · {s.Id} · {s.Rounds} 轮";
         ResultCard.Visibility = Visibility.Collapsed;
         ListPane.Visibility = Visibility.Collapsed;
         PickedPane.Visibility = Visibility.Visible;

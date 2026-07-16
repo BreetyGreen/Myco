@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Workspace-aware relay.** Sessions now carry their workspace: the relay
+  list shows a project label, a search box filters by title / workspace /
+  id (CLI `--search` matches projects too), and the handoff package header
+  gains a "所属工作空间" line plus a hint telling the target agent to read
+  that directory for code-layer context — the conversation layer and the
+  workspace layer complement each other.
+- CI now builds the Windows app on every push/PR (windows-latest job).
+
+### Fixed
+- **Antigravity detection on Windows.** User data lives under
+  `%APPDATA%\Antigravity IDE` (the space matters; the bare `Antigravity`
+  dir is just the install wizard shell). Detection now points there and
+  counts real `chat.ChatSessionStore.index` entries instead of LIKE-matching
+  key names — the Home tab shows an honest "0 段" (Antigravity keeps agent
+  conversations server-side) instead of "结构已变".
+- WorkBuddy's per-session timestamp cwd (`~\WorkBuddy\2026-…`) is no longer
+  presented as a session's "workspace".
+
 ## [0.4.0] — 2026-07-14
 
 Myco comes to Windows: a native tray app with full feature parity, the same

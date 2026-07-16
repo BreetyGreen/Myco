@@ -96,6 +96,8 @@ def _matches(sess: CanonicalSession, needle: str) -> bool:
         return True
     if n in (sess.title or sess.derive_title()).lower():
         return True
+    if n in (sess.project or "").lower():
+        return True
     return False
 
 
@@ -124,6 +126,7 @@ def _print_json(sessions: List[CanonicalSession], limit: int = 200) -> None:
             "session_id": s.session_id,
             "agent": s.source_agent,
             "title": (s.title or s.derive_title()),
+            "project": s.project or "",
             "msgs": len(s.non_empty_messages()),
             "date": date,
         })

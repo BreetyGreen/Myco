@@ -30,6 +30,7 @@ from __future__ import annotations
 import glob
 import json
 import os
+import re
 from typing import Any, Dict, Iterator, List, Optional
 
 from ..base import Reader
@@ -46,6 +47,18 @@ from ..canonical import (
     ROLE_USER,
 )
 from .. import utils
+
+
+def _real_workspace(path: str) -> str:
+    """Filter out per-session scratch dirs that masquerade as workspaces.
+
+    WorkBuddy runs every session in its own timestamp-named cwd
+    (e.g. ~\\WorkBuddy\\2026-07-16-17-08-21). Presenting that as the
+    session's "workspace" would mislead, so such sessions report none.
+    """
+    if re.match(r"^\d{4}-\d{2}-\d{2}", os.path.basename(path.rstrip("/\\"))):
+        return ""
+    return path
 
 
 class _JsonlReader(Reader):
@@ -125,14 +138,14 @@ class _JsonlReader(Reader):
         for row in rows:
             cwd = row.get("cwd")
             if isinstance(cwd, str) and cwd:
-                return cwd
+                return _real_workspace(cwd)
             # session_meta-ish nesting (defensive)
             meta = row.get("payload") if isinstance(row.get("payload"), dict) else None
             if meta and isinstance(meta.get("cwd"), str):
-                return meta["cwd"]
+                return _real_workspace(meta["cwd"])
         # fall back: decode the parent dir name
         parent = os.path.basename(os.path.dirname(path))
-        return utils.decode_project_dir(parent)
+        return _real_workspace(utils.decode_project_dir(parent))
 
     # ------------------------------------------------------------------
     def _row_to_message(self, row: Dict[str, Any]):
