@@ -82,4 +82,4 @@ Gatekeeper 一次性放行说明）→ Full changelog compare 链接。
 |---|---|---|
 | `Myco-Setup-<v>.exe` | 本地 `build.ps1 -Installer`（Inno Setup 6） | ~57MB |
 | `Myco-win-<v>.zip` | 本地 `build.ps1` | ~77MB |
-| `Myco-<v>.dmg` | CI：`release-macos.yml`（macos-14，Apple Silicon） | ~0.5MB |
+| `Myco-<v>.dmg` | CI：`release-macos.yml`（macos-15，Apple Silicon） | ~0.5MB |
