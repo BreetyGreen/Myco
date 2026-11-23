@@ -26,6 +26,7 @@ Modes
     --mode auto     (default) verbatim if it fits; else recap + key turns
     --mode full     verbatim, tools collapsed to one line (may be very long)
     --mode summary  always recap + key turns (shortest)
+    --mode recent   recap + the newest turns verbatim, filling the budget
 
 Read-only. Cross-platform. Pure standard library.
 """

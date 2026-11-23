@@ -110,6 +110,7 @@ python3 engine/handoff_chat.py --session "简历" --agents codex
 | `auto`（默认） | 全文能装下就全文；超出字符预算自动降级为「前情提要 + 首尾关键轮次」 | **推荐**，兼顾完整与上下文长度 |
 | `full` | 全文逐字，工具调用压成一行（可能很长，粘贴到 B 可能被截断） | 短/中会话要一字不落 |
 | `summary` | 始终「前情提要 + 关键轮次」，最短 | 只要前情、不要全文 |
+| `recent` | 「前情提要 + 最近若干轮原文」，从最新一轮往前装满字符预算（至少 2 轮） | 只想从上次停下的地方接着做 |
 
 其它常用参数：
 
@@ -145,7 +146,7 @@ engine/
     ├── base.py                 # Reader 抽象基类
     ├── utils.py                # 时间归一 / 路径解码 / slug / 文本抽取 / 剪贴板
     ├── exporter.py             # Canonical → Markdown + JSON + manifest
-    ├── handoff.py              # Canonical → 会话接力包（full/summary/auto）
+    ├── handoff.py              # Canonical → 会话接力包（full/summary/auto/recent）
     ├── html_viewer.py          # Canonical → 单文件离线 HTML 时间线
     └── readers/
         ├── jsonl_reader.py     # Claude + WorkBuddy（同构，共用）

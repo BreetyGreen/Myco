@@ -18,6 +18,9 @@ Three packing modes:
     auto     — try `full`; if it exceeds the char budget, degrade to a
                "recap + head/tail key-turn window" that fits the budget.
                (recommended: honest about the physical context-length limit)
+    recent   — recap + the most recent turns verbatim, as many as fit the
+               budget (always at least the last 2). For "pick up where I
+               left off" when only the latest exchanges matter.
 
 Pure standard library.
 """
@@ -41,7 +44,8 @@ from . import utils
 MODE_FULL = "full"
 MODE_SUMMARY = "summary"
 MODE_AUTO = "auto"
-VALID_MODES = (MODE_AUTO, MODE_FULL, MODE_SUMMARY)
+MODE_RECENT = "recent"
+VALID_MODES = (MODE_AUTO, MODE_FULL, MODE_SUMMARY, MODE_RECENT)
 
 # Default character budget for `auto` before it degrades. ~48k chars is a
 # conservative, model-agnostic stand-in for "fits comfortably in context".
@@ -63,7 +67,7 @@ AGENT_DISPLAY = {
 @dataclass
 class HandoffResult:
     text: str
-    mode_used: str  # full | summary | window
+    mode_used: str  # full | window | recent
     char_count: int
     turns_included: int
     turns_total: int
@@ -289,6 +293,51 @@ def _render_window(
     return recap + "\n" + "\n".join(body)
 
 
+def _render_turn(role: str, text: str, tools: List[str]) -> str:
+    lines = [_label(role)]
+    if text:
+        lines.append(text.rstrip())
+    for t in tools:
+        lines.append(f"  〔调用工具: {t}〕")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _render_recent(
+    turns: List[Tuple[str, str, List[str]]],
+    budget: int,
+    min_keep: int = 2,
+) -> Tuple[str, int, bool]:
+    """Recap + the newest turns verbatim, walking back until `budget` is used.
+
+    Always keeps at least `min_keep` turns (truncating them only if a single
+    turn alone would blow the budget).
+    Returns (rendered core, turns kept, whether any kept turn was truncated).
+    """
+    recap = _recap(turns)
+    n = len(turns)
+    remaining = budget - len(recap)
+    kept: List[str] = []
+    truncated = False
+    for i in range(n - 1, -1, -1):
+        role, text, tools = turns[i]
+        chunk = _render_turn(role, text, tools)
+        if len(chunk) > remaining:
+            if len(kept) >= min_keep:
+                break
+            cap = _USER_TRUNC if role == ROLE_USER else _ASSISTANT_TRUNC
+            chunk = _render_turn(role, utils.truncate(text.rstrip(), cap), tools)
+            truncated = True
+        kept.append(chunk)
+        remaining -= len(chunk)
+    kept.reverse()
+    omitted = n - len(kept)
+    head = ["## 最近 %d 轮（原文）" % len(kept), ""]
+    if omitted:
+        head += [f"  …〔更早的 {omitted} 轮已省略，如需可让我补充〕…", ""]
+    return recap + "\n" + "\n".join(head) + "\n".join(kept), len(kept), truncated
+
+
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
@@ -331,6 +380,26 @@ def build_handoff(
             turns_total=turns_total,
             degraded=degraded,
             note="summary 模式：始终精简为摘要 + 关键轮次。",
+            full_transcript_path=full_transcript_path if pointer else "",
+        )
+
+    if mode == MODE_RECENT:
+        # Header/footer eat part of the budget; reserve room for them.
+        overhead = len(_assemble("", bool(full_transcript_path)))
+        core, kept, truncated = _render_recent(
+            turns, max(max_chars - overhead, 2_000)
+        )
+        degraded = kept < turns_total or truncated
+        pointer = bool(full_transcript_path) and degraded
+        text = _assemble(core, pointer)
+        return HandoffResult(
+            text=text,
+            mode_used="recent",
+            char_count=len(text),
+            turns_included=kept,
+            turns_total=turns_total,
+            degraded=degraded,
+            note=f"recent 模式：保留最近 {kept}/{turns_total} 轮原文 + 前情提要。",
             full_transcript_path=full_transcript_path if pointer else "",
         )
 
