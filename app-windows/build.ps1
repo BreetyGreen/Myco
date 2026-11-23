@@ -11,7 +11,7 @@
 #         .\build.ps1 -NoPython       # 轻量包（要求系统装有 Python 3）
 #         .\build.ps1 -Installer      # 额外编译 Myco-Setup-<version>.exe（需 Inno Setup 6）
 param(
-    [string]$Version = "0.4.0",
+    [string]$Version = "0.4.1",
     [switch]$NoPython,
     [switch]$Installer,
     [string]$PythonEmbedVersion = "3.12.8"

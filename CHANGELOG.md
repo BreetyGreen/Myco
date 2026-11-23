@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] — 2026-11-23
+
+Relay gets smarter about long conversations and workspaces, and the
+「近期」 packing mode finally works.
+
 ### Added
 - **Handoff v2: full-transcript pointer.** Mechanical summaries have a low
   ceiling — but the receiver is an LLM that can read files. When a package
@@ -24,6 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI now builds the Windows app on every push/PR (windows-latest job).
 
 ### Fixed
+- **「近期」 (recent) handoff mode always failed.** Both apps offered it and
+  passed `--mode recent`, but the engine only accepted auto/full/summary.
+  `recent` now packs the recap plus the newest turns verbatim, filling the
+  char budget from the latest turn backwards (at least the last 2); if
+  anything is omitted or truncated, the header points at `-full.md`.
 - **Antigravity detection on Windows.** User data lives under
   `%APPDATA%\Antigravity IDE` (the space matters; the bare `Antigravity`
   dir is just the install wizard shell). Detection now points there and
@@ -241,7 +251,8 @@ First public release. **Install a skill once, use it across every AI coding agen
 ### Agents covered
 Claude Code · Codex CLI · Cursor · Gemini CLI · Cline
 
-[Unreleased]: https://github.com/BreetyGreen/Myco/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/BreetyGreen/Myco/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/BreetyGreen/Myco/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/BreetyGreen/Myco/compare/v0.3.2...v0.4.0
 [0.3.2]: https://github.com/BreetyGreen/Myco/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/BreetyGreen/Myco/compare/v0.3.0...v0.3.1

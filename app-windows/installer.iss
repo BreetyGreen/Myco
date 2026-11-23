@@ -11,7 +11,7 @@
 
 #define MyAppName "Myco"
 #ifndef MyAppVersion
-  #define MyAppVersion "0.4.0"
+  #define MyAppVersion "0.4.1"
 #endif
 #define MyAppPublisher "BreetyGreen"
 #define MyAppURL "https://github.com/BreetyGreen/Myco"
